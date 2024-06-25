@@ -67,38 +67,38 @@ const ClientSection = () => {
                   <>
                     <td className="px-4 py-2">
                       <a
-                        href={row.linkedInUrl}
-                        className="text-blue-500 hover:underline"
-                      >
-                        {row.linkedInUrl}
-                      </a>
-                    </td>
-                    <td className="px-4 py-2">{row.firstName.value}</td>
-                    <td className="px-4 py-2">{row.lastName.value}</td>
-                    <td className="px-4 py-2">{row.email.value}</td>
-                    <td className="px-4 py-2">{row.companyId.value}</td>
-                    <td className="px-4 py-2">{row.status}</td>
-                  </>
-                ) : (
-                  <>
-                    <td className="px-4 py-2">{row.name.value}</td>
-                    <td className="px-4 py-2">
-                      <a
                         href={row.linkedInUrl.value}
                         className="text-blue-500 hover:underline"
                       >
                         {row.linkedInUrl.value}
                       </a>
                     </td>
+                    <td className="px-4 py-2">{row.firstName?.value}</td>
+                    <td className="px-4 py-2">{row.lastName?.value}</td>
+                    <td className="px-4 py-2">{row.email?.value}</td>
+                    <td className="px-4 py-2">{row.companyId?.value}</td>
+                    <td className="px-4 py-2">{row.status}</td>
+                  </>
+                ) : (
+                  <>
+                    <td className="px-4 py-2">{row.name?.value}</td>
                     <td className="px-4 py-2">
                       <a
-                        href={row.website.value}
+                        href={row.linkedInUrl?.value}
                         className="text-blue-500 hover:underline"
                       >
-                        {row.website.value}
+                        {row.linkedInUrl?.value}
                       </a>
                     </td>
-                    <td className="px-4 py-2">{row.phone.value}</td>
+                    <td className="px-4 py-2">
+                      <a
+                        href={row.website?.value}
+                        className="text-blue-500 hover:underline"
+                      >
+                        {row.website?.value}
+                      </a>
+                    </td>
+                    <td className="px-4 py-2">{row.phone?.value}</td>
                     <td className={`px-4 py-2  `}>
                       <div className={`bg-blue ${getStatusClass(row.status)}`}>
                         {row.status}

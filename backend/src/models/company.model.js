@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
 const FieldSchema = new mongoose.Schema({
-  value: { type: String, required: true },
-  lastUpdated: { type: Date, required: true, default: Date.now },
+  value: { type: String },
+  lastUpdated: { type: Date, default: Date.now },
 });
 
 const CompanySchema = new mongoose.Schema(

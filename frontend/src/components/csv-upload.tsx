@@ -46,12 +46,13 @@ const CSVUpload = () => {
     setIsUploading(true);
     setShowProgressPopup(true);
     setTotal(csvData.length);
+    console.log("hello");
 
     const increment = 100 / csvData.length;
 
     for (let i = 0; i < csvData.length; i++) {
       // Simulate processing each row
-      await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate network latency
+      new Promise((resolve) => setTimeout(resolve, 100)); // Simulate network latency
       setProgress((prevProgress) => prevProgress + increment);
     }
 
