@@ -67,6 +67,10 @@ app.use("/api/companies", companyRoutes);
 app.use("/api/leads", leadRoutes);
 app.use("/api/users", usersRouter);
 
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../../frontend/build/index.html"));
+});
+
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

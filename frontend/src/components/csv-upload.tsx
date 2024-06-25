@@ -57,13 +57,10 @@ const CSVUpload = () => {
     }
 
     try {
-      const response = await axios.post(
-        "http://172.20.10.2:5000/api/upload-csv",
-        {
-          csvData,
-          fieldMappings,
-        }
-      );
+      const response = await axios.post("/api/upload-csv", {
+        csvData,
+        fieldMappings,
+      });
 
       const { leadResults, companyResults } = response.data;
       setLeadResults(leadResults);

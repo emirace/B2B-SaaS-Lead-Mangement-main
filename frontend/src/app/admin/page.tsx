@@ -38,7 +38,7 @@ const Admin = () => {
   const fetchUsers = async () => {
     try {
       // console.log(isLoggedIn);
-      const response = await axios.get("http://172.20.10.2:5000/api/users/", {
+      const response = await axios.get("/api/users/", {
         withCredentials: true,
       });
       const data = response.data;
