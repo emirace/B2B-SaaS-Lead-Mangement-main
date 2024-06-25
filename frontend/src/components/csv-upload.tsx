@@ -1,14 +1,13 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios, { CancelTokenSource } from "axios";
 import { useRouter } from "next/navigation";
 import Papa from "papaparse";
 import { useData } from "@/context/DataContext";
+import { calculateChunkSize } from "@/utils/data";
 
 interface CSVRow {
   [key: string]: string;
 }
-
-const CHUNK_SIZE = 1000;
 
 const CSVUpload = () => {
   const { setCompanyResults, setLeadResults } = useData();
@@ -21,6 +20,9 @@ const CSVUpload = () => {
   const [progress, setProgress] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
   const [showProgressPopup, setShowProgressPopup] = useState<boolean>(false);
+  const [cancelSource, setCancelSource] = useState<CancelTokenSource | null>(
+    null
+  );
   const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,6 +47,7 @@ const CSVUpload = () => {
   };
 
   const handleConfirm = async () => {
+    const CHUNK_SIZE = calculateChunkSize(csvData.length);
     setIsUploading(true);
     setShowProgressPopup(true);
 
@@ -56,6 +59,9 @@ const CSVUpload = () => {
       chunks.push(csvData.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE));
     }
 
+    const source = axios.CancelToken.source();
+    setCancelSource(source);
+
     try {
       const results = await Promise.all(
         chunks.map(async (chunk, index) => {
@@ -64,6 +70,9 @@ const CSVUpload = () => {
             {
               csvData: chunk,
               fieldMappings,
+            },
+            {
+              cancelToken: source.token,
             }
           );
           setProgress(((index + 1) / totalChunks) * 100);
@@ -83,13 +92,20 @@ const CSVUpload = () => {
 
       setLeadResults(leadResults);
       setCompanyResults(companyResults);
-      router.push(`/admin/upload-summary`);
     } catch (error) {
       console.error("Error uploading CSV:", error);
     } finally {
       setIsUploading(false);
-      setShowProgressPopup(false);
     }
+  };
+
+  const handleCancel = () => {
+    if (cancelSource) {
+      cancelSource.cancel("Upload cancelled by user");
+    }
+    setShowProgressPopup(false);
+    setIsUploading(false);
+    setProgress(0);
   };
 
   return (
@@ -179,12 +195,25 @@ const CSVUpload = () => {
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
-            <button
-              onClick={() => setShowProgressPopup(false)}
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-            >
-              Cancel
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={handleCancel}
+                className="flex-1 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+              {!isUploading && (
+                <button
+                  onClick={() => {
+                    setShowProgressPopup(false);
+                    router.push(`/admin/upload-summary`);
+                  }}
+                  className="flex-1 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                >
+                  View Result
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}

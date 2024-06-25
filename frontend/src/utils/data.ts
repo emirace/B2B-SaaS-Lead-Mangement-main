@@ -34,3 +34,11 @@ export const getStatusClass = (status: string) => {
       return "";
   }
 };
+
+export const calculateChunkSize = (dataLength: number) => {
+  if (dataLength <= 10) return 1;
+  if (dataLength <= 100) return 10;
+  if (dataLength <= 1000) return 100;
+  if (dataLength <= 10000) return 1000;
+  return 5000;
+};
