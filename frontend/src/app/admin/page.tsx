@@ -38,9 +38,12 @@ const Admin = () => {
   const fetchUsers = async () => {
     try {
       // console.log(isLoggedIn);
-      const response = await axios.get("/api/users/", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        "https://b2b-saas-lead-mangement-main.onrender.com/api/users/",
+        {
+          withCredentials: true,
+        }
+      );
       const data = response.data;
       // console.log(data);
       setUsers(data);

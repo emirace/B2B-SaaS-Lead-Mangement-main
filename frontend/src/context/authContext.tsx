@@ -32,9 +32,12 @@ const AuthProvider = (props: ContainerProps) => {
     if (!token) {
       // Validate the token with the backend
       axios
-        .post("/api/users/validate", {
-          withCredentials: true,
-        })
+        .post(
+          "https://b2b-saas-lead-mangement-main.onrender.com/api/users/validate",
+          {
+            withCredentials: true,
+          }
+        )
         .then((response) => {
           setUser(response.data.user);
           setIsLoggedIn(true);
@@ -51,9 +54,13 @@ const AuthProvider = (props: ContainerProps) => {
     password: string;
   }): Promise<boolean> => {
     try {
-      const response = await axios.post("/api/users/login", credentials, {
-        withCredentials: true,
-      });
+      const response = await axios.post(
+        "https://b2b-saas-lead-mangement-main.onrender.com/api/users/login",
+        credentials,
+        {
+          withCredentials: true,
+        }
+      );
       const userData: User = response.data;
       setUser(userData);
       setIsLoggedIn(true);
@@ -74,10 +81,13 @@ const AuthProvider = (props: ContainerProps) => {
     try {
       console.log("Registration credentials:", credentials2); // Log credentials
 
-      const response = await axios.post("/api/users/register", {
-        email: credentials2.email,
-        password: credentials2.newPassword, // Ensure correct field name
-      });
+      const response = await axios.post(
+        "https://b2b-saas-lead-mangement-main.onrender.com/api/users/register",
+        {
+          email: credentials2.email,
+          password: credentials2.newPassword, // Ensure correct field name
+        }
+      );
 
       // console.log('Registration response:', response.data); // Log response data
       return true;

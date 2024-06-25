@@ -60,7 +60,7 @@ const CSVUpload = () => {
       const results = await Promise.all(
         chunks.map(async (chunk, index) => {
           const response = await axios.post(
-            "http://172.20.10.2:5000/api/upload-csv",
+            "https://b2b-saas-lead-mangement-main.onrender.com/api/upload-csv",
             {
               csvData: chunk,
               fieldMappings,

@@ -61,7 +61,7 @@ const UserManagementPage: React.FC<UserManagementPageProps> = ({ users }) => {
       try {
         // Make API call to update user role
         await axios.put(
-          `/api/users/${selectedUser._id}/role`,
+          `https://b2b-saas-lead-mangement-main.onrender.com/api/users/${selectedUser._id}/role`,
           { role: newRole },
           {
             withCredentials: true,
@@ -81,9 +81,12 @@ const UserManagementPage: React.FC<UserManagementPageProps> = ({ users }) => {
     if (selectedUser && isBrowser && router) {
       try {
         // Make API call to delete user by ID
-        await axios.delete(`/api/users/${selectedUser._id}`, {
-          withCredentials: true,
-        });
+        await axios.delete(
+          `https://b2b-saas-lead-mangement-main.onrender.com/api/users/${selectedUser._id}`,
+          {
+            withCredentials: true,
+          }
+        );
         // Update UI or refresh data as needed
         closeDeleteModal();
         router.refresh();
