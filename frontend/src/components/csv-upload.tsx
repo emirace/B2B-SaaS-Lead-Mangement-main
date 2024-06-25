@@ -64,7 +64,7 @@ const CSVUpload = () => {
 
     try {
       const results = await Promise.all(
-        chunks.map(async (chunk, index) => {
+        chunks.map(async (chunk) => {
           const response = await axios.post(
             "https://b2b-saas-lead-mangement-main.onrender.com/api/upload-csv",
             {
@@ -75,7 +75,7 @@ const CSVUpload = () => {
               cancelToken: source.token,
             }
           );
-          setProgress(((index + 1) / totalChunks) * 100);
+          setProgress((prev) => ((prev + 1) / totalChunks) * 100);
           return response.data;
         })
       );
