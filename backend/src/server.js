@@ -5,8 +5,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
-const csv = require("csv-parser");
-const fs = require("fs");
+const next = require("next");
 const path = require("path");
 
 const upload = multer({ dest: "uploads/" });
@@ -67,12 +66,17 @@ app.use("/api/companies", companyRoutes);
 app.use("/api/leads", leadRoutes);
 app.use("/api/users", usersRouter);
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../../frontend/build/index.html"));
-});
+const nextApp = next({ dev: false, dir: "../../frontend" });
+const handleApp = nextApp.getRequestHandler();
 
-// Start the server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+nextApp.prepare().then(() => {
+  app.get("*", (req, res) => {
+    return handleApp(req, res);
+  });
+
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, (err) => {
+    if (err) throw err;
+    console.log(`> Ready on http://localhost:${PORT}`);
+  });
 });
