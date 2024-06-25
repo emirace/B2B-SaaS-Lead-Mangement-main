@@ -8,6 +8,8 @@ interface CSVRow {
   [key: string]: string;
 }
 
+const CHUNK_SIZE = 1000;
+
 const CSVUpload = () => {
   const { setCompanyResults, setLeadResults } = useData();
   const [csvData, setCSVData] = useState<CSVRow[]>([]);
@@ -45,24 +47,40 @@ const CSVUpload = () => {
   const handleConfirm = async () => {
     setIsUploading(true);
     setShowProgressPopup(true);
-    setTotal(csvData.length);
-    console.log("hello");
 
-    const increment = 100 / csvData.length;
+    const totalChunks = Math.ceil(csvData.length / CHUNK_SIZE);
+    setTotal(totalChunks);
 
-    for (let i = 0; i < csvData.length; i++) {
-      // Simulate processing each row
-      new Promise((resolve) => setTimeout(resolve, 100)); // Simulate network latency
-      setProgress((prevProgress) => prevProgress + increment);
+    const chunks = [];
+    for (let i = 0; i < totalChunks; i++) {
+      chunks.push(csvData.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE));
     }
 
     try {
-      const response = await axios.post("/api/upload-csv", {
-        csvData,
-        fieldMappings,
-      });
+      const results = await Promise.all(
+        chunks.map(async (chunk, index) => {
+          const response = await axios.post(
+            "http://172.20.10.2:5000/api/upload-csv",
+            {
+              csvData: chunk,
+              fieldMappings,
+            }
+          );
+          setProgress(((index + 1) / totalChunks) * 100);
+          return response.data;
+        })
+      );
 
-      const { leadResults, companyResults } = response.data;
+      const leadResults = [];
+      const companyResults = [];
+
+      results.forEach(
+        ({ leadResults: leadRes, companyResults: companyRes }) => {
+          leadResults.push(...leadRes);
+          companyResults.push(...companyRes);
+        }
+      );
+
       setLeadResults(leadResults);
       setCompanyResults(companyResults);
       router.push(`/admin/upload-summary`);
