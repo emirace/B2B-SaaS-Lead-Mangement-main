@@ -49,7 +49,7 @@ const CSVUpload = () => {
     setShowProgressPopup(true);
 
     const totalChunks = Math.ceil(csvData.length / CHUNK_SIZE);
-    setTotal(totalChunks);
+    setTotal(csvData.length);
 
     const chunks = [];
     for (let i = 0; i < totalChunks; i++) {
