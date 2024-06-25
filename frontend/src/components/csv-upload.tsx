@@ -71,8 +71,8 @@ const CSVUpload = () => {
         })
       );
 
-      const leadResults = [];
-      const companyResults = [];
+      const leadResults: any[] = [];
+      const companyResults: any[] = [];
 
       results.forEach(
         ({ leadResults: leadRes, companyResults: companyRes }) => {
