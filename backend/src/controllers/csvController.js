@@ -239,11 +239,12 @@ const processCSVData = async (csvData, fieldMappings) => {
   }
 
   try {
-    await Promise.all([
+    const res = await Promise.all([
       InCompleteLead.bulkWrite(incompleteLeadBulkOperations),
       Lead.bulkWrite(leadBulkOperations),
       Company.bulkWrite(companyBulkOperations),
     ]);
+    console.log(res);
   } catch (error) {
     console.error("Error in bulkWrite operations:", error);
   }
