@@ -47,7 +47,7 @@ const CSVUpload = () => {
   };
 
   const handleConfirm = async () => {
-    const CHUNK_SIZE = calculateChunkSize(csvData.length);
+    const CHUNK_SIZE = 500;
     setIsUploading(true);
     setShowProgressPopup(true);
 
