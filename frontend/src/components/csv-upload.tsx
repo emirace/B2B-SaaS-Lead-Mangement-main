@@ -9,6 +9,53 @@ interface CSVRow {
   [key: string]: string;
 }
 
+const leadFields = [
+  "LinkedIn UrL",
+  "First Name",
+  "Last Name",
+  "Email",
+  "First Phone",
+  "Title",
+  "Job Title",
+  "Seniority",
+  "Departments",
+  "Work Phone",
+  "Home Phone",
+  "Mobile Phone",
+  "Other Phone",
+  "City",
+  "State",
+  "Country",
+  "Facebook",
+  "Twitter",
+  "Past Companies",
+  "Last Updated",
+];
+
+const companyFields = [
+  "Company Linkedin Url",
+  "Company Name",
+  "Company Website",
+  "Phone numbers",
+  "Address",
+  "Employees",
+  "Retail Location",
+  "Industry",
+  "Keywords",
+  "Facebook",
+  "Twitter",
+  "City",
+  "State",
+  "Country",
+  "SEO Description",
+  "Technologies",
+  "Annual Revenue",
+  "Total Funding",
+  "Latest Funding",
+  "Latest Funding Amount",
+  "Last Raised At",
+];
+
 const CSVUpload = () => {
   const { setCompanyResults, setLeadResults } = useData();
   const [csvData, setCSVData] = useState<CSVRow[]>([]);
@@ -50,6 +97,7 @@ const CSVUpload = () => {
     const CHUNK_SIZE = 500;
     setIsUploading(true);
     setShowProgressPopup(true);
+    setProgress(0);
 
     const totalChunks = Math.ceil(csvData.length / CHUNK_SIZE);
     setTotal(csvData.length);
@@ -125,13 +173,7 @@ const CSVUpload = () => {
 
         <div className="mb-4">
           <h2 className="text-xl font-semibold">Lead Info:</h2>
-          {[
-            "LinkedIn UrL",
-            "First Name",
-            "Last Name",
-            "Email",
-            "Last Updated",
-          ].map((field, index) => (
+          {leadFields.map((field, index) => (
             <div key={index} className="mb-2">
               <label className="block mb-1">{field}:</label>
               <select
@@ -152,12 +194,7 @@ const CSVUpload = () => {
 
         <div className="mb-4">
           <h2 className="text-xl font-semibold">Company Info:</h2>
-          {[
-            "Company Linkedin Url",
-            "Company Name",
-            "Company Website",
-            "Phone numbers",
-          ].map((field, index) => (
+          {companyFields.map((field, index) => (
             <div key={index} className="mb-2">
               <label className="block mb-1">{field}:</label>
               <select
