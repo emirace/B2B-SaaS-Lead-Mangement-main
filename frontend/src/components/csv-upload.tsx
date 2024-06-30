@@ -63,6 +63,7 @@ const CSVUpload = () => {
     setCancelSource(source);
 
     try {
+      let count = 1;
       const results = await Promise.all(
         chunks.map(async (chunk, index) => {
           const response = await axios.post(
@@ -75,7 +76,8 @@ const CSVUpload = () => {
               cancelToken: source.token,
             }
           );
-          setProgress(((index + 1) / totalChunks) * 100);
+          setProgress((count / totalChunks) * 100);
+          count += 1;
           return response.data;
         })
       );
