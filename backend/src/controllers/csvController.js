@@ -189,9 +189,9 @@ const processCSVData = async (csvData, fieldMappings) => {
     if (!leadData.linkedInUrl.value) {
       const filter = { "email.value": leadData.email.value };
       const update = { $set: leadData };
-      const options = { upsert: true };
+      const upsert = true;
       incompleteLeadBulkOperations.push({
-        updateOne: { filter, update, options },
+        updateOne: { filter, update, upsert },
       });
       leadResults.push({
         ...leadData,
@@ -211,12 +211,11 @@ const processCSVData = async (csvData, fieldMappings) => {
         ],
       };
       const leadUpdate = { $set: leadData };
-      const leadOptions = { upsert: true };
       leadBulkOperations.push({
         updateOne: {
           filter: leadFilter,
           update: leadUpdate,
-          options: leadOptions,
+          upsert: true,
         },
       });
       leadResults.push({ ...leadData, status: "created/updated" });
@@ -232,19 +231,20 @@ const processCSVData = async (csvData, fieldMappings) => {
       updateOne: {
         filter: companyFilter,
         update: companyUpdate,
-        options: companyOptions,
+        upsert: true,
       },
     });
     companyResults.push({ ...companyData, status: "created/updated" });
   }
 
   try {
-    const res = await Promise.all([
+    const results = await Promise.all([
       InCompleteLead.bulkWrite(incompleteLeadBulkOperations),
       Lead.bulkWrite(leadBulkOperations),
       Company.bulkWrite(companyBulkOperations),
     ]);
-    console.log(res);
+
+    console.log("Bulk write results:", results);
   } catch (error) {
     console.error("Error in bulkWrite operations:", error);
   }
