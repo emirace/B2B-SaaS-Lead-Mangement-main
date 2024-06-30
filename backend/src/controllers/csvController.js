@@ -243,10 +243,8 @@ const processCSVData = async (csvData, fieldMappings) => {
       Lead.bulkWrite(leadBulkOperations),
       Company.bulkWrite(companyBulkOperations),
     ]);
-
-    console.log("Bulk write results:", results);
   } catch (error) {
-    console.error("Error in bulkWrite operations:", error);
+    console.error("Error in bulkWrite operations: ", error);
   }
 
   return { leadResults, companyResults };
