@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import axios, { CancelTokenSource } from "axios";
-import { useRouter } from "next/navigation";
 import Papa from "papaparse";
-import { useData } from "@/context/DataContext";
-import { calculateChunkSize } from "@/utils/data";
+import { useData } from "@/context/DataContext"; // Adjust the import path as needed
+import { useRouter } from "next/navigation";
 
-interface CSVRow {
+export interface CSVRow {
   [key: string]: string;
 }
 
@@ -57,19 +55,22 @@ const companyFields = [
 ];
 
 const CSVUpload = () => {
-  const { setCompanyResults, setLeadResults } = useData();
+  const {
+    startUpload,
+    cancelUpload,
+    isUploading,
+    progress,
+    total,
+    showProgressPopup,
+    isMinimized,
+    closeModal,
+    minimizeModal,
+  } = useData();
   const [csvData, setCSVData] = useState<CSVRow[]>([]);
   const [fieldMappings, setFieldMappings] = useState<{ [key: string]: string }>(
     {}
   );
   const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
-  const [isUploading, setIsUploading] = useState<boolean>(false);
-  const [progress, setProgress] = useState<number>(0);
-  const [total, setTotal] = useState<number>(0);
-  const [showProgressPopup, setShowProgressPopup] = useState<boolean>(false);
-  const [cancelSource, setCancelSource] = useState<CancelTokenSource | null>(
-    null
-  );
   const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,70 +94,12 @@ const CSVUpload = () => {
     }));
   };
 
-  const handleConfirm = async () => {
-    const CHUNK_SIZE = 500;
-    setIsUploading(true);
-    setShowProgressPopup(true);
-    setProgress(0);
-
-    const totalChunks = Math.ceil(csvData.length / CHUNK_SIZE);
-    setTotal(csvData.length);
-
-    const chunks = [];
-    for (let i = 0; i < totalChunks; i++) {
-      chunks.push(csvData.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE));
-    }
-
-    const source = axios.CancelToken.source();
-    setCancelSource(source);
-
-    try {
-      let count = 1;
-      const results = await Promise.all(
-        chunks.map(async (chunk, index) => {
-          const response = await axios.post(
-            "https://b2b-saas-lead-mangement-main.onrender.com/api/upload-csv",
-            {
-              csvData: chunk,
-              fieldMappings,
-            },
-            {
-              cancelToken: source.token,
-            }
-          );
-          setProgress((count / totalChunks) * 100);
-          count += 1;
-          return response.data;
-        })
-      );
-
-      const leadResults: any[] = [];
-      const companyResults: any[] = [];
-
-      results.forEach(
-        ({ leadResults: leadRes, companyResults: companyRes }) => {
-          leadResults.push(...leadRes);
-          companyResults.push(...companyRes);
-        }
-      );
-
-      setLeadResults(leadResults);
-      setCompanyResults(companyResults);
-    } catch (error) {
-      console.error("Error uploading CSV:", error);
-    } finally {
-      setIsUploading(false);
-      setProgress(100);
-    }
+  const handleConfirm = () => {
+    startUpload(csvData, fieldMappings);
   };
 
   const handleCancel = () => {
-    if (cancelSource) {
-      cancelSource.cancel("Upload cancelled by user");
-    }
-    setShowProgressPopup(false);
-    setIsUploading(false);
-    setProgress(0);
+    cancelUpload();
   };
 
   return (
@@ -223,37 +166,52 @@ const CSVUpload = () => {
 
       {/* Progress Popup */}
       {showProgressPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div
+          className={`fixed inset-0 ${
+            isMinimized
+              ? "w-64 h-24 bottom-0 right-0 m-4"
+              : "flex items-center justify-center bg-black bg-opacity-50"
+          }`}
+        >
           <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-xl font-bold mb-4">Uploading CSV</h2>
-            <p className="mb-4">
-              Fetching {Math.round(progress)}% of {total} records
-            </p>
-            <div className="w-full bg-gray-200 rounded-full h-4 mb-4">
-              <div
-                className="bg-blue-500 h-4 rounded-full"
-                style={{ width: `${progress}%` }}
-              ></div>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={handleCancel}
-                className="flex-1 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-              >
-                Cancel
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Uploading CSV</h2>
+              <button onClick={minimizeModal} className="text-blue-500">
+                {isMinimized ? "Maximize" : "Minimize"}
               </button>
-              {!isUploading && (
-                <button
-                  onClick={() => {
-                    setShowProgressPopup(false);
-                    router.push(`/admin/upload-summary`);
-                  }}
-                  className="flex-1 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                >
-                  View Result
-                </button>
-              )}
             </div>
+            {!isMinimized && (
+              <>
+                <p className="mb-4">
+                  Fetching {Math.round(progress)}% of {total} records
+                </p>
+                <div className="w-full bg-gray-200 rounded-full h-4 mb-4">
+                  <div
+                    className="bg-blue-500 h-4 rounded-full"
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleCancel}
+                    className="flex-1 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                  >
+                    Cancel
+                  </button>
+                  {!isUploading && (
+                    <button
+                      onClick={() => {
+                        closeModal();
+                        router.push(`/admin/upload-summary`);
+                      }}
+                      className="flex-1 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                    >
+                      View Result
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
