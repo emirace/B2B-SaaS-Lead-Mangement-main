@@ -2,24 +2,21 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
 import axios, { CancelTokenSource } from "axios";
 import { CSVRow } from "@/components/csv-upload";
+import {
+  FaCloudUploadAlt,
+  FaRegWindowMaximize,
+  FaRegWindowMinimize,
+} from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import { FaMinimize } from "react-icons/fa6";
 
 interface DataContextType {
   leadResults: any[];
   companyResults: any[];
-  isUploading: boolean;
-  progress: number;
-  total: number;
-  showProgressPopup: boolean;
-  isMinimized: boolean;
   startUpload: (
     csvData: CSVRow[],
     fieldMappings: { [key: string]: string }
   ) => void;
-  cancelUpload: () => void;
-  closeModal: () => void;
-  minimizeModal: () => void;
-  setLeadResults: React.Dispatch<React.SetStateAction<any[]>>;
-  setCompanyResults: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -37,6 +34,7 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({
   const [cancelSource, setCancelSource] = useState<CancelTokenSource | null>(
     null
   );
+  const router = useRouter();
 
   const startUpload = async (
     csvData: CSVRow[],
@@ -95,16 +93,22 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({
     } finally {
       setIsUploading(false);
       setProgress(100);
+      setIsMinimized(false);
     }
   };
 
   const cancelUpload = () => {
-    if (cancelSource) {
-      cancelSource.cancel("Upload cancelled by user");
+    const userConfirmed = window.confirm(
+      "Are you sure you want to cancel the upload?"
+    );
+    if (userConfirmed) {
+      if (cancelSource) {
+        cancelSource.cancel("Upload cancelled by user");
+      }
+      setShowProgressPopup(false);
+      setIsUploading(false);
+      setProgress(0);
     }
-    setShowProgressPopup(false);
-    setIsUploading(false);
-    setProgress(0);
   };
 
   const closeModal = () => {
@@ -118,22 +122,68 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({
   return (
     <DataContext.Provider
       value={{
-        leadResults,
-        companyResults,
-        isUploading,
-        progress,
-        total,
-        showProgressPopup,
-        isMinimized,
         startUpload,
-        cancelUpload,
-        closeModal,
-        minimizeModal,
-        setLeadResults,
-        setCompanyResults,
+        companyResults,
+        leadResults,
       }}
     >
       {children}
+      {/* Progress Popup */}
+      {showProgressPopup && (
+        <div
+          className={`fixed  ${
+            isMinimized
+              ? " h-24 bottom-20 right-0 m-4"
+              : "inset-0 flex items-center justify-center bg-black bg-opacity-50"
+          }`}
+        >
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <div className="flex justify-between items-center gap-10 mb-4">
+              <h2 className="text-xl font-bold">Uploading CSV</h2>
+              <button onClick={minimizeModal} className="text-blue-500">
+                {isMinimized ? <FaRegWindowMaximize /> : <FaMinimize />}
+              </button>
+            </div>
+            {isMinimized ? (
+              <div className="animate-bounce flex justify-center">
+                <FaCloudUploadAlt size={40} color="blue" />
+              </div>
+            ) : (
+              <>
+                <p className="mb-4">
+                  Uploaded {Math.round(progress)}% of {total} records
+                </p>
+                <div className="w-full bg-gray-200 rounded-full h-4 mb-4">
+                  <div
+                    className="bg-blue-500 h-4 rounded-full"
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+                <div className="flex gap-2">
+                  {isUploading ? (
+                    <button
+                      onClick={cancelUpload}
+                      className="flex-1 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                    >
+                      Cancel
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        closeModal();
+                        router.push("/admin/upload-summary");
+                      }}
+                      className="flex-1 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                    >
+                      View Result
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </DataContext.Provider>
   );
 };
