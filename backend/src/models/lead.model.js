@@ -26,6 +26,7 @@ const LeadSchema = new mongoose.Schema(
     facebook: FieldSchema,
     twitter: FieldSchema,
     pastCompanies: FieldSchema,
+    companyID: { type: String },
     // Add other company fields as needed
   },
   { timestamps: true }
