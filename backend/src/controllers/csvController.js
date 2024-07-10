@@ -186,7 +186,19 @@ const processCSVData = async (csvData, fieldMappings) => {
     };
 
     // Lead Data Processing
-    if (leadData.firstName.value || leadData.lastName.value) {
+    if (!leadData.linkedInUrl.value) {
+      const filter = { "email.value": leadData.email.value };
+      const update = { $set: leadData };
+      const upsert = true;
+      leadBulkOperations.push({
+        updateOne: { filter, update, upsert },
+      });
+      leadResults.push({
+        ...leadData,
+        status: "created/updated",
+        reason: "Missing LinkedIn Url",
+      });
+    } else if (leadData.firstName.value || leadData.lastName.value) {
       const leadFilter = {
         $or: [
           { "email.value": leadData.email.value },
@@ -195,7 +207,7 @@ const processCSVData = async (csvData, fieldMappings) => {
       };
       const leadUpdate = {
         $set: { ...leadData },
-        $setOnInsert: { linkedInUrl: leadData.linkedInUrl }, // Ensure LinkedIn URL is not changed
+        $setOnInsert: { "linkedInUrl.value": leadData.linkedInUrl.value }, // Ensure LinkedIn URL is not changed
       };
       leadBulkOperations.push({
         updateOne: {
@@ -239,5 +251,7 @@ const processCSVData = async (csvData, fieldMappings) => {
 
   return { leadResults, companyResults };
 };
+
+module.exports = { processCSVData };
 
 module.exports = { processCSVData };
