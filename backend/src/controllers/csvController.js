@@ -206,8 +206,7 @@ const processCSVData = async (csvData, fieldMappings) => {
         ],
       };
       const leadUpdate = {
-        $set: { ...leadData },
-        $setOnInsert: { "linkedInUrl.value": leadData.linkedInUrl.value }, // Ensure LinkedIn URL is not changed
+        $set: leadData,
       };
       leadBulkOperations.push({
         updateOne: {
