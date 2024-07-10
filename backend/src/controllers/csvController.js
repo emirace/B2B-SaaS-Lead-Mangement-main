@@ -1,6 +1,5 @@
 const Lead = require("../models/lead.model");
 const Company = require("../models/company.model");
-const InCompleteLead = require("../models/inCompleteLead.model");
 
 const calculateTrustScore = (date) => {
   const today = new Date();
@@ -15,7 +14,6 @@ const processCSVData = async (csvData, fieldMappings) => {
   let companyResults = [];
 
   const leadBulkOperations = [];
-  const incompleteLeadBulkOperations = [];
   const companyBulkOperations = [];
 
   for (const row of csvData) {
@@ -97,6 +95,7 @@ const processCSVData = async (csvData, fieldMappings) => {
         lastUpdated: row[fieldMappings["Last Updated"]],
       },
       companyID: row[fieldMappings["Company Linkedin Url"]],
+      isComplete: !!row[fieldMappings["LinkedIn UrL"]],
     };
 
     const companyData = {
@@ -187,24 +186,7 @@ const processCSVData = async (csvData, fieldMappings) => {
     };
 
     // Lead Data Processing
-    if (!leadData.linkedInUrl.value) {
-      const filter = { "email.value": leadData.email.value };
-      const update = { $set: leadData };
-      const upsert = true;
-      incompleteLeadBulkOperations.push({
-        updateOne: { filter, update, upsert },
-      });
-      leadResults.push({
-        ...leadData,
-        status: "created in incomplete",
-        reason: "Missing LinkedIn Url",
-      });
-    } else if (leadData.firstName.value || leadData.lastName.value) {
-      const incompleteLeadFilter = { "email.value": leadData.email.value };
-      incompleteLeadBulkOperations.push({
-        deleteOne: { filter: incompleteLeadFilter },
-      });
-
+    if (leadData.firstName.value || leadData.lastName.value) {
       const leadFilter = {
         $or: [
           { "email.value": leadData.email.value },
@@ -248,7 +230,6 @@ const processCSVData = async (csvData, fieldMappings) => {
 
   try {
     const results = await Promise.all([
-      InCompleteLead.bulkWrite(incompleteLeadBulkOperations),
       Lead.bulkWrite(leadBulkOperations),
       Company.bulkWrite(companyBulkOperations),
     ]);
