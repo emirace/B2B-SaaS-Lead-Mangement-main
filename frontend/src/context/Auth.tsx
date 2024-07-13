@@ -19,7 +19,8 @@ axios.defaults.withCredentials = true;
 
 const AuthProvider = (props: ContainerProps) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const getCookie = (name: string) => {
     const nameEQ = name + "=";
@@ -71,9 +72,14 @@ const AuthProvider = (props: ContainerProps) => {
       setUser(userData);
       localStorage.setItem("user", JSON.stringify(userData)); // Store user data in localStorage
       return true; // Return true if login was successful
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to login", error);
       setUser(null);
+      setError(
+        error?.response?.data?.message ||
+          error.message ||
+          "Invalid email or password"
+      );
       return false; // Return false if login failed
     }
   };
@@ -113,6 +119,7 @@ const AuthProvider = (props: ContainerProps) => {
         loading,
         setLoading,
         user,
+        error,
         setUser,
         login,
         register,

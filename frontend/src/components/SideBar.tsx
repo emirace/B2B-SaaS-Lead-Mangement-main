@@ -46,7 +46,7 @@ const SideBar: React.FC<Props> = ({ isMenuVisible, onMenuToggle }) => {
   const { logout } = useAuth();
 
   const handleLogout = () => {
-    logout;
+    logout();
   };
 
   return (

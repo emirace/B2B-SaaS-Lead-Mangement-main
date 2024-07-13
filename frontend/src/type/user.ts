@@ -4,6 +4,7 @@ export type AuthContextType = {
   loading: boolean;
   setLoading: React.Dispatch<SetStateAction<boolean>>;
   user: User | null;
+  error: string;
   setUser: React.Dispatch<SetStateAction<User | null>>;
   login: LoginFunction;
   register: RegisterFunction;
