@@ -1,10 +1,14 @@
+"use client";
 import React, { createContext, useState, useContext, ReactNode } from "react";
 import axios, { CancelTokenSource } from "axios";
-import { FaCloudUploadAlt, FaRegWindowMaximize } from "react-icons/fa";
+import { CSVRow } from "@/components/csv-upload";
+import {
+  FaCloudUploadAlt,
+  FaRegWindowMaximize,
+  FaRegWindowMinimize,
+} from "react-icons/fa";
+import { useRouter } from "next/navigation";
 import { FaMinimize } from "react-icons/fa6";
-import { CSVRow } from "../pages/Dashboard/Upload";
-import { useNavigate } from "react-router-dom";
-import { axiosInstance } from "./Auth";
 
 interface DataContextType {
   leadResults: any[];
@@ -17,9 +21,8 @@ interface DataContextType {
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
-export const DataProvider: React.FC<{ navigate: any; children: ReactNode }> = ({
+export const DataProvider: React.FC<{ children: ReactNode }> = ({
   children,
-  navigate,
 }) => {
   const [leadResults, setLeadResults] = useState<any[]>([]);
   const [companyResults, setCompanyResults] = useState<any[]>([]);
@@ -31,6 +34,7 @@ export const DataProvider: React.FC<{ navigate: any; children: ReactNode }> = ({
   const [cancelSource, setCancelSource] = useState<CancelTokenSource | null>(
     null
   );
+  const router = useRouter();
 
   const startUpload = async (
     csvData: CSVRow[],
@@ -56,8 +60,8 @@ export const DataProvider: React.FC<{ navigate: any; children: ReactNode }> = ({
       let count = 1;
       const results = await Promise.all(
         chunks.map(async (chunk, index) => {
-          const response = await axiosInstance.post(
-            "/upload-csv",
+          const response = await axios.post(
+            "https://b2b-saas-lead-mangement-main.onrender.com/api/upload-csv",
             {
               csvData: chunk,
               fieldMappings,
@@ -167,7 +171,7 @@ export const DataProvider: React.FC<{ navigate: any; children: ReactNode }> = ({
                     <button
                       onClick={() => {
                         closeModal();
-                        navigate("/summary");
+                        router.push("/admin/upload-summary");
                       }}
                       className="flex-1 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
                     >

@@ -18,6 +18,7 @@ const app = express();
 const allowedOrigins = [
   "https://b2-b-saa-s-lead-mangement.vercel.app",
   "http://localhost:3000",
+  "http://localhost:5173",
   "https://b2-b-saa-s-lead-mangement-main.vercel.app",
 ];
 
