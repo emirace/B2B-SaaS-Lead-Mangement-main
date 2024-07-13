@@ -90,8 +90,7 @@ const AuthProvider = (props: ContainerProps) => {
   }): Promise<boolean> => {
     try {
       console.log("Registration credentials:", credentials2); // Log credentials
-
-      const response = await axios.post(
+      await axios.post(
         "https://b2b-saas-lead-mangement-main.onrender.com/api/users/register",
         {
           email: credentials2.email,

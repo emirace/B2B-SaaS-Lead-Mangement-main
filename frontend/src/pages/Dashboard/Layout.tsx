@@ -11,22 +11,26 @@ function Layout() {
   const [isMenuVisible, setMenuVisibility] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!user && !loading) {
+      navigate("/signin");
+    }
+  }, []);
+
   if (loading) {
     return (
       <div className="h-screen w-screen flex justify-center items-center">
         <Loading size="lg" />
       </div>
     );
-  } else if (!user) {
-    return navigate("/signin");
   }
 
   const toggleMenuVisibility = () => {
     setMenuVisibility(!isMenuVisible);
   };
   return (
-    <DataProvider navigate={navigate}>
-      <div>
+    <div>
+      <DataProvider navigate={navigate}>
         <NavBar onMenuToggle={toggleMenuVisibility} />
         <div style={{ display: "flex" }}>
           <div style={{}}>
@@ -39,8 +43,8 @@ function Layout() {
             <Outlet />
           </div>
         </div>
-      </div>
-    </DataProvider>
+      </DataProvider>
+    </div>
   );
 }
 

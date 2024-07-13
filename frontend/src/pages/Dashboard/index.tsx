@@ -5,11 +5,9 @@ import {
   FaCalendarDay,
   FaCalendarWeek,
   FaCalendarAlt,
-  FaCheck,
   FaArrowUp,
 } from "react-icons/fa";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Bar, Pie, Line } from "react-chartjs-2";
 import {
   LinearScale,
   CategoryScale,
@@ -17,8 +15,7 @@ import {
   PointElement,
   LineElement,
 } from "chart.js";
-import { axiosInstance, useAuth } from "../../context/Auth";
-import { FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6";
+import { axiosInstance } from "../../context/Auth";
 
 ChartJS.register(
   ArcElement,
@@ -32,147 +29,145 @@ ChartJS.register(
 );
 
 function Dashboard() {
-  const { user } = useAuth();
-
   // leads
   const [leadsToday, setLeadsToday] = useState(null);
   const [leadsThisMonth, setLeadsThisMonth] = useState(null);
   const [leadsThisWeek, setLeadsThisWeek] = useState(null);
   const [leads, setLeads] = useState([]);
-  const [leadsPerMonth, setLeadsPerMonth] = useState([]);
-  const [leadsPerStage, setLeadsPerStage] = useState([]);
-  const [leadSource, setLeadSource] = useState([]);
+  const [, setLeadsPerMonth] = useState([]);
+  const [, setLeadsPerStage] = useState([]);
+  const [, setLeadSource] = useState([]);
 
-  const labels = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sept",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  const leadsPerData = labels.map((month) => {
-    const matchingMonth: any = leadsPerMonth?.find(
-      (entry: any) => labels.indexOf(month) === entry._id.month - 1
-    );
-    return matchingMonth ? matchingMonth.total : 0;
-  });
+  // const labels = [
+  //   "Jan",
+  //   "Feb",
+  //   "Mar",
+  //   "Apr",
+  //   "May",
+  //   "Jun",
+  //   "Jul",
+  //   "Aug",
+  //   "Sept",
+  //   "Oct",
+  //   "Nov",
+  //   "Dec",
+  // ];
+  // const leadsPerData = labels.map((month) => {
+  //   const matchingMonth: any = leadsPerMonth?.find(
+  //     (entry: any) => labels.indexOf(month) === entry._id.month - 1
+  //   );
+  //   return matchingMonth ? matchingMonth.total : 0;
+  // });
 
-  const chartStageData = {
-    labels: labels,
-    datasets: [
-      {
-        type: "line",
-        label: "Leads Per Stage",
-        pointBackgroundColor: "#afdf36",
-        borderColor: "#333",
-        pointRadius: 5,
-        borderWidth: 1,
-        data: leadsPerData,
-      },
-    ],
-  };
+  // const chartStageData = {
+  //   labels: labels,
+  //   datasets: [
+  //     {
+  //       type: "line",
+  //       label: "Leads Per Stage",
+  //       pointBackgroundColor: "#afdf36",
+  //       borderColor: "#333",
+  //       pointRadius: 5,
+  //       borderWidth: 1,
+  //       data: leadsPerData,
+  //     },
+  //   ],
+  // };
 
-  const stagelabels = [
-    "T1",
-    "T2",
-    "T3",
-    "T4",
-    "T5",
-    "T6",
-    "T7",
-    "T8",
-    "T9",
-    "T10",
-    "T11",
-    "T12",
-    "T13",
-    "T14",
-    "T15",
-    "T16",
-    "T17",
-    "T18",
-    "T19",
-  ];
-  const leadStageData = stagelabels.map((stage) => {
-    const matchingStage: any = leadsPerStage?.find(
-      (entry: any) => entry._id === stage
-    );
-    return matchingStage ? matchingStage.count : 0;
-  });
+  // const stagelabels = [
+  //   "T1",
+  //   "T2",
+  //   "T3",
+  //   "T4",
+  //   "T5",
+  //   "T6",
+  //   "T7",
+  //   "T8",
+  //   "T9",
+  //   "T10",
+  //   "T11",
+  //   "T12",
+  //   "T13",
+  //   "T14",
+  //   "T15",
+  //   "T16",
+  //   "T17",
+  //   "T18",
+  //   "T19",
+  // ];
+  // const leadStageData = stagelabels.map((stage) => {
+  //   const matchingStage: any = leadsPerStage?.find(
+  //     (entry: any) => entry._id === stage
+  //   );
+  //   return matchingStage ? matchingStage.count : 0;
+  // });
 
-  const colorCode = "#275347";
-  const state = {
-    data: {
-      labels: [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T5",
-        "T6",
-        "T7",
-        "T8",
-        "T9",
-        "T10",
-        "T11",
-        "T12",
-        "T13",
-        "T14",
-        "T15",
-        "T16",
-        "T17",
-        "T18",
-        "T19",
-      ],
-      datasets: [
-        {
-          fill: true,
-          label: null,
-          backgroundColor: colorCode,
-          borderColor: colorCode,
-          barPercentage: 0.5,
-          categoryPercentage: 0.7,
-          borderWidth: 2,
-          borderRadius: 10,
-          data: leadStageData,
-        },
-      ],
-    },
-    options: {
-      plugins: {
-        legend: {
-          display: false,
-        },
-      },
-      scales: {
-        x: {
-          grid: {
-            display: false,
-          },
-          beginAtZero: false,
-          ticks: {
-            color: "#333",
-          },
-        },
-        y: {
-          grid: {
-            display: false,
-          },
-          beginAtZero: true,
-          ticks: {
-            color: "#333",
-          },
-        },
-      },
-    },
-  };
+  // const colorCode = "#275347";
+  // const state = {
+  //   data: {
+  //     labels: [
+  //       "T1",
+  //       "T2",
+  //       "T3",
+  //       "T4",
+  //       "T5",
+  //       "T6",
+  //       "T7",
+  //       "T8",
+  //       "T9",
+  //       "T10",
+  //       "T11",
+  //       "T12",
+  //       "T13",
+  //       "T14",
+  //       "T15",
+  //       "T16",
+  //       "T17",
+  //       "T18",
+  //       "T19",
+  //     ],
+  //     datasets: [
+  //       {
+  //         fill: true,
+  //         label: null,
+  //         backgroundColor: colorCode,
+  //         borderColor: colorCode,
+  //         barPercentage: 0.5,
+  //         categoryPercentage: 0.7,
+  //         borderWidth: 2,
+  //         borderRadius: 10,
+  //         data: leadStageData,
+  //       },
+  //     ],
+  //   },
+  //   options: {
+  //     plugins: {
+  //       legend: {
+  //         display: false,
+  //       },
+  //     },
+  //     scales: {
+  //       x: {
+  //         grid: {
+  //           display: false,
+  //         },
+  //         beginAtZero: false,
+  //         ticks: {
+  //           color: "#333",
+  //         },
+  //       },
+  //       y: {
+  //         grid: {
+  //           display: false,
+  //         },
+  //         beginAtZero: true,
+  //         ticks: {
+  //           color: "#333",
+  //         },
+  //       },
+  //     },
+  //   },
+  // };
 
   // source pie chart
   // const sourceData = {

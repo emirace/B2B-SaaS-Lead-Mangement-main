@@ -3,7 +3,6 @@ import axios, { CancelTokenSource } from "axios";
 import { FaCloudUploadAlt, FaRegWindowMaximize } from "react-icons/fa";
 import { FaMinimize } from "react-icons/fa6";
 import { CSVRow } from "../pages/Dashboard/Upload";
-import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "./Auth";
 
 interface DataContextType {
@@ -55,7 +54,7 @@ export const DataProvider: React.FC<{ navigate: any; children: ReactNode }> = ({
     try {
       let count = 1;
       const results = await Promise.all(
-        chunks.map(async (chunk, index) => {
+        chunks.map(async (chunk) => {
           const response = await axiosInstance.post(
             "/upload-csv",
             {
