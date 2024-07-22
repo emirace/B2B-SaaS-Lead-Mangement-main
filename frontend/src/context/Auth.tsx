@@ -8,7 +8,7 @@ type ContainerProps = {
 };
 
 export const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://b2b-saas-lead-mangement-main.onrender.com/api",
   timeout: 5000,
 });
 
