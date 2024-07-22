@@ -35,11 +35,11 @@ const sidebars = [
     icon: <FaUpload />,
     path: "/upload",
   },
-  {
-    name: "Add User",
-    icon: <FaUserPlus />,
-    path: "/add-user",
-  },
+  // {
+  //   name: "Add User",
+  //   icon: <FaUserPlus />,
+  //   path: "/add-user",
+  // },
 ];
 
 const SideBar: React.FC<Props> = ({ isMenuVisible, onMenuToggle }) => {
@@ -52,10 +52,10 @@ const SideBar: React.FC<Props> = ({ isMenuVisible, onMenuToggle }) => {
   return (
     <>
       <div
-        className={`fixed md:relative z-20  w-auto border-r border-gray-300  transition-transform transform ${
+        className={`fixed md:relative z-20  w-full md:w-60 border-r border-gray-300  transition-transform transform ${
           isMenuVisible ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
-        style={{ height: "calc(100vh - 70px)", backgroundColor: "#f9fafc" }}
+        style={{ height: "calc(100vh - 80px)", backgroundColor: "#f9fafc" }}
       >
         <div className="pt-5 px-4 relative h-full">
           {sidebars.map((item) => (

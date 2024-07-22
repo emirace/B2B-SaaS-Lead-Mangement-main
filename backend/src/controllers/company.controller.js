@@ -68,8 +68,11 @@ exports.findAll = async (req, res) => {
 
 // Find a single company by ID
 exports.findOne = async (req, res) => {
+  console.log(req.params.id);
   try {
-    const company = await Company.findById(req.params.id);
+    const company = await Company.findOne({
+      "linkedInUrl.value": req.params.id,
+    });
     if (!company) {
       return res.status(404).send({ message: "Company not found" });
     }
@@ -107,12 +110,10 @@ exports.update = async (req, res) => {
     }
 
     const updatedCompany = await company.save();
-    res
-      .status(200)
-      .send({
-        message: "Company updated successfully",
-        company: updatedCompany,
-      });
+    res.status(200).send({
+      message: "Company updated successfully",
+      company: updatedCompany,
+    });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }

@@ -7,6 +7,7 @@ import Loading from "../components/Loading";
 function SignIn() {
   const { user, login, loading, error } = useAuth();
   const navigate = useNavigate();
+  const [logging, setLogging] = useState(false);
 
   useEffect(() => {
     if (!loading && user) {
@@ -18,7 +19,9 @@ function SignIn() {
   const [password, setPassword] = useState("");
 
   async function submit() {
-    login({ email, password });
+    setLogging(true);
+    await login({ email, password });
+    setLogging(false);
   }
   if (loading) {
     return (
@@ -72,9 +75,10 @@ function SignIn() {
                 <div className="my-2">
                   <button
                     onClick={submit}
+                    disabled={logging}
                     className="rounded font-medium w-full py-2 text-white bg-primary "
                   >
-                    Sign In
+                    {logging ? "Signing..." : "Sign In"}
                   </button>
                   {error && <div className="text-red-500">{error}</div>}
                 </div>

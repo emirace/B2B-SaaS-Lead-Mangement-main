@@ -161,6 +161,42 @@ exports.findAll = async (req, res) => {
   }
 };
 
+// Retrieve all Leads from the database
+exports.getLinkedin = async (req, res) => {
+  try {
+    const { page = 1, limit = 10, search = "" } = req.query;
+
+    // Search and Filter
+    const searchRegex = new RegExp(search, "i");
+
+    const searchConditions = {
+      $or: [{ "linkedInUrl.value": searchRegex }],
+      // ...filter,
+    };
+
+    // Pagination and Sorting
+    const options = {
+      skip: (parseInt(page) - 1) * parseInt(limit),
+      limit: parseInt(limit),
+    };
+
+    const leads = await Lead.find(searchConditions, null, options);
+    const totalLeads = await Lead.countDocuments(searchConditions);
+
+    res.send({
+      leads,
+      totalPages: Math.ceil(totalLeads / limit),
+      currentPage: parseInt(page),
+      totalLeads,
+    });
+  } catch (err) {
+    res.status(500).send({
+      message: err.message || "Some error occurred while retrieving leads.",
+    });
+    console.log(err);
+  }
+};
+
 // Find a single Lead with an id
 exports.findOne = async (req, res) => {
   const id = req.params.id;

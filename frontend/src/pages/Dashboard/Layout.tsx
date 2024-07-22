@@ -13,13 +13,13 @@ function Layout() {
 
   useEffect(() => {
     if (!user && !loading) {
-      navigate("/signin");
+      // navigate("/signin");
     }
   }, []);
 
   if (loading) {
     return (
-      <div className="h-screen w-screen flex justify-center items-center">
+      <div className="h-screen w-screen  flex justify-center items-center">
         <Loading size="lg" />
       </div>
     );
@@ -39,7 +39,7 @@ function Layout() {
               isMenuVisible={isMenuVisible}
             />
           </div>
-          <div style={{ flex: 8 }}>
+          <div className="w-full">
             <Outlet />
           </div>
         </div>

@@ -16,6 +16,9 @@ router.get("/:id", leadController.findOne);
 // Update a lead
 router.put("/:id", leadController.update);
 
+// Retrieve all companies
+router.get("/linkedin/:id", leadController.getLinkedin);
+
 // Delete a lead
 router.delete("/:id", leadController.delete);
 

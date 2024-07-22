@@ -7,6 +7,8 @@ import Users from "./pages/Dashboard/Users";
 import Upload from "./pages/Dashboard/Upload";
 import AddUser from "./pages/Dashboard/AddUser";
 import Summary from "./pages/Dashboard/Summary";
+import Lead from "./pages/Dashboard/Lead";
+import Company from "./pages/Dashboard/Company";
 
 const router = createBrowserRouter([
   {
@@ -21,7 +23,9 @@ const router = createBrowserRouter([
       { path: "summary", element: <Summary /> },
     ],
   },
+  { path: "lead/:id", element: <Lead /> },
   { path: "/signin", element: <SignIn /> },
+  { path: "/company/:id", element: <Company /> },
 ]);
 
 export default router;

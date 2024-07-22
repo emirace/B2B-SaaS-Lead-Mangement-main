@@ -87,7 +87,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
 
   return (
     <div
-      className={`absolute top-0 left-0 bottom-0 min-w-48 p-4 overflow-y-auto bg-gray-100 z-10 transition-transform transform ${
+      className={`absolute top-0 left-0 bottom-0 min-w-64 h-full p-4 overflow-y-auto bg-gray-100 z-10 transition-transform transform ${
         showFilter ? "translate-x-0" : "-translate-x-full"
       }`}
     >
