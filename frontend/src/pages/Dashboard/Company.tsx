@@ -40,12 +40,10 @@ interface ICompany {
 function Company() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(30);
+  const [pageSize] = useState(30);
   const [totalPages, setTotalPages] = useState(0);
   const { id } = useParams();
   const [company, setCompany] = useState<ICompany | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [loadingLeads, setLoadingLeads] = useState(true);
 
   useEffect(() => {
     fetchCompany();

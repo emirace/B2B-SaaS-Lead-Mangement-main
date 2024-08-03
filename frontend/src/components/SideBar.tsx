@@ -5,7 +5,6 @@ import {
   FaChartBar,
   FaTasks,
   FaUsers,
-  FaUserPlus,
   FaUpload,
   FaArrowUp,
 } from "react-icons/fa";

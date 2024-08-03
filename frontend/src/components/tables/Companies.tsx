@@ -5,8 +5,6 @@ import {
   FaSort,
   FaFilter,
   FaLinkedinIn,
-  FaPhone,
-  FaEnvelope,
   FaPlus,
   FaLink,
   FaFacebookF,

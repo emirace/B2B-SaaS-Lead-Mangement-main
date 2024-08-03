@@ -1,7 +1,6 @@
 // src/components/FilterSidebar.tsx
 import React, { useState } from "react";
 import { CiSearch } from "react-icons/ci";
-import { FaTimes } from "react-icons/fa";
 import { GoTriangleUp, GoTriangleDown } from "react-icons/go";
 
 interface FilterOption {
@@ -24,15 +23,12 @@ interface FilterSidebarProps {
 
 const FilterSidebar: React.FC<FilterSidebarProps> = ({
   showFilter,
-  setShowFilter,
-  filters,
-  handleFilterChange,
   clearFilters,
 }) => {
   const [jobTitleCollapsed, setJobTitleCollapsed] = useState(true);
   const [departmentCollapsed, setDepartmentCollapsed] = useState(true);
   const [pastCompanyCollapsed, setPastCompanyCollapsed] = useState(true);
-  const [options, setOptions] = useState([]);
+  const [options] = useState([]);
 
   const toggleCollapse = (section: string) => {
     switch (section) {
@@ -51,6 +47,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
   };
 
   const renderFilterOptions = (options: FilterOption[], filterKey: string) => {
+    console.log(filterKey);
     return (
       <div className="relative">
         <div className="border rounded-md flex items-center p-1">

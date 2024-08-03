@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { useAuth } from "../../context/Auth";
 import PlanCard from "../../components/PlanCard";
 
 function Plans() {
-  const { user } = useAuth();
   const [plan, setPlan] = useState("Annual");
 
   const plans = [
