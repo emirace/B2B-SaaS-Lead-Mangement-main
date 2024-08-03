@@ -9,6 +9,7 @@ import AddUser from "./pages/Dashboard/AddUser";
 import Summary from "./pages/Dashboard/Summary";
 import Lead from "./pages/Dashboard/Lead";
 import Company from "./pages/Dashboard/Company";
+import Plans from "./pages/Dashboard/Plans";
 
 const router = createBrowserRouter([
   {
@@ -16,11 +17,12 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { path: "", element: <Dashboard /> },
-      { path: "leads", element: <Leads /> },
+      { path: "search", element: <Leads /> },
       { path: "users", element: <Users /> },
       { path: "upload", element: <Upload /> },
       { path: "add-user", element: <AddUser /> },
       { path: "summary", element: <Summary /> },
+      { path: "plans", element: <Plans /> },
     ],
   },
   { path: "lead/:id", element: <Lead /> },

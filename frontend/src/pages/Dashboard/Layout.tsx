@@ -13,14 +13,14 @@ function Layout() {
 
   useEffect(() => {
     if (!user && !loading) {
-      // navigate("/signin");
+      navigate("/signin");
     }
-  }, []);
+  }, [user]);
 
   if (loading) {
     return (
       <div className="h-screen w-screen  flex justify-center items-center">
-        <Loading size="lg" />
+        <Loading />
       </div>
     );
   }
@@ -29,17 +29,15 @@ function Layout() {
     setMenuVisibility(!isMenuVisible);
   };
   return (
-    <div>
+    <div className="h-screen overflow-hidden text-sm">
       <DataProvider navigate={navigate}>
         <NavBar onMenuToggle={toggleMenuVisibility} />
-        <div style={{ display: "flex" }}>
-          <div style={{}}>
-            <SideBar
-              onMenuToggle={toggleMenuVisibility}
-              isMenuVisible={isMenuVisible}
-            />
-          </div>
-          <div className="w-full">
+        <div className="flex h-full">
+          <SideBar
+            onMenuToggle={toggleMenuVisibility}
+            isMenuVisible={isMenuVisible}
+          />
+          <div className="w-full md:w-[calc(100vw-240px)] h-[calc(100vh-65px)]">
             <Outlet />
           </div>
         </div>

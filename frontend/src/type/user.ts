@@ -16,6 +16,7 @@ export interface User {
   email: string;
   role: string;
   name: string;
+  plan: string | null;
 }
 
 type LoginFunction = (credentials: Credentials) => Promise<boolean>;

@@ -7,6 +7,7 @@ import {
   FaUsers,
   FaUserPlus,
   FaUpload,
+  FaArrowUp,
 } from "react-icons/fa";
 
 interface Props {
@@ -21,9 +22,9 @@ const sidebars = [
     path: "/",
   },
   {
-    name: "Leads",
+    name: "Search",
     icon: <FaTasks />,
-    path: "/leads",
+    path: "/search",
   },
   {
     name: "Users",
@@ -52,7 +53,7 @@ const SideBar: React.FC<Props> = ({ isMenuVisible, onMenuToggle }) => {
   return (
     <>
       <div
-        className={`fixed md:relative z-20  w-full md:w-60 border-r border-gray-300  transition-transform transform ${
+        className={`fixed md:relative z-30  w-full h-full md:w-60 border-r border-gray-300  transition-transform transform ${
           isMenuVisible ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
         style={{ height: "calc(100vh - 80px)", backgroundColor: "#f9fafc" }}
@@ -66,17 +67,28 @@ const SideBar: React.FC<Props> = ({ isMenuVisible, onMenuToggle }) => {
               className={({ isActive }) =>
                 `${
                   isActive
-                    ? "text-white bg-primary rounded-md font-bold"
-                    : "text-primary font-medium"
-                } flex items-center hover:font-bold  gap-5 text-md rounded  my-1 p-3 py-3`
+                    ? "text-white bg-primary rounded-md font-medium"
+                    : "text-primary font-medium hover:bg-primary hover:bg-opacity-15"
+                } flex items-center gap-5 text-md rounded mt-1 p-2`
               }
             >
               {item.icon}
-              <span className="text-xs uppercase tracking-wider md:pr-5">
+              <span className=" capitalize tracking-wider md:pr-5">
                 {item.name}
               </span>
             </NavLink>
           ))}
+          <div className="rounded  my-1 p-2 text-white bg-green-500 ">
+            <NavLink
+              to="/plans"
+              className="flex items-center gap-5  font-medium"
+            >
+              <FaArrowUp />
+              <span className=" text-xs uppercase tracking-wider">
+                Upgrade Plan
+              </span>
+            </NavLink>
+          </div>
           <div className="rounded  my-1 p-3 py-3 ">
             <button
               className="flex items-center gap-5 text-red-500 font-medium"

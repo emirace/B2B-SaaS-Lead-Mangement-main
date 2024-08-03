@@ -11,7 +11,7 @@ function SignIn() {
 
   useEffect(() => {
     if (!loading && user) {
-      navigate("/");
+      navigate("/plans");
     }
   }, [user, loading]);
 
@@ -26,7 +26,7 @@ function SignIn() {
   if (loading) {
     return (
       <div className="h-screen w-screen flex justify-center items-center">
-        <Loading size="lg" />
+        <Loading />
       </div>
     );
   }

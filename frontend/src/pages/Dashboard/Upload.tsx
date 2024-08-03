@@ -114,7 +114,7 @@ const Upload = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 overflow-auto h-full">
       <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
         <h1 className="text-2xl font-bold mb-4">Upload CSV</h1>
         <input
