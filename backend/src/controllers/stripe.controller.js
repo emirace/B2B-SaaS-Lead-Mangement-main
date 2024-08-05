@@ -46,19 +46,19 @@ const subscription = {
 exports.webHook = async (req, res) => {
   try {
     let event = req.body;
-
-    const signature = req.headers["stripe-signature"];
-    try {
-      event = stripe.webhooks.constructEvent(
-        req.body,
-        signature,
-        process.env.STRIPE_ENDPOINT_SECRET
-      );
-    } catch (err) {
-      console.log(`⚠️  Webhook signature verification failed.`, err.message);
-      return res.sendStatus(400);
+    if (process.env.STRIPE_ENDPOINT_SECRET) {
+      const signature = req.headers["stripe-signature"];
+      try {
+        event = stripe.webhooks.constructEvent(
+          req.body,
+          signature,
+          process.env.STRIPE_ENDPOINT_SECRET
+        );
+      } catch (err) {
+        console.log(`⚠️  Webhook signature verification failed.`, err.message);
+        return res.sendStatus(400);
+      }
     }
-
     // Handle the event
     switch (event.type) {
       case "payment_intent.succeeded":
