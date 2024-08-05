@@ -46,7 +46,7 @@ exports.login = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).send({ currentUser: user });
+    res.status(200).send({ user });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }

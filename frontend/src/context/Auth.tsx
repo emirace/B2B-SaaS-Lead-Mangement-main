@@ -66,9 +66,9 @@ const AuthProvider = (props: ContainerProps) => {
       const response = await axiosInstance.post("/users/login", credentials, {
         withCredentials: true,
       });
-      const userData: User = response.data;
-      setUser(userData);
-      localStorage.setItem("user", JSON.stringify(userData)); // Store user data in localStorage
+      const { user } = response.data;
+      setUser(user);
+      localStorage.setItem("user", JSON.stringify(user)); // Store user data in localStorage
       return true; // Return true if login was successful
     } catch (error: any) {
       console.error("Failed to login", error);
