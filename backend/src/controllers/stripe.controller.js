@@ -104,6 +104,7 @@ async function handlePaymentIntentSucceeded(
   paymentIntent
 ) {
   try {
+    console.log(userId, planType, planTime, paymentIntent);
     // Find the correct plan details based on the type and time
     const planDetails = subscription[planTime].find(
       (plan) => plan.type === planType
