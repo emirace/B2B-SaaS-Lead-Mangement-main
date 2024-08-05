@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import { ImSpinner9 } from "react-icons/im";
@@ -11,6 +11,9 @@ const Profile: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    handlefetchTransaction();
+  }, []);
   const handlefetchTransaction = async () => {
     try {
       setLoading(true);
@@ -66,7 +69,7 @@ const Profile: React.FC = () => {
             <div className="flex justify-between">
               <span>Phone Credit</span>
               <span>
-                {currentPlan?.emailCredits} per {currentPlan?.per}
+                {currentPlan?.mobileCredits} per {currentPlan?.per}
               </span>
             </div>
 
