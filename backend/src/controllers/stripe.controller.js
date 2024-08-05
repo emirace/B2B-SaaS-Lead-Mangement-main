@@ -124,8 +124,8 @@ async function handlePaymentIntentSucceeded(
 
     user.subscription.type = planType;
     user.subscription.time = planTime;
-    user.emailCredit = planDetails.emailCredit;
-    user.phoneCredit = planDetails.phoneCredit;
+    user.emailCredit = planDetails.emailCredits;
+    user.phoneCredit = planDetails.phoneCredits;
     await user.save();
 
     // Record the transaction
