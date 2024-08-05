@@ -1,4 +1,3 @@
-"use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { AuthContextType, User } from "../type/user";
@@ -8,8 +7,14 @@ type ContainerProps = {
 };
 
 export const axiosInstance = axios.create({
+  // baseURL: "http://localhost:5000/api",
   baseURL: "https://b2b-saas-lead-mangement-main.onrender.com/api",
-  timeout: 5000,
+  // timeout: 5000,
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+    // Add other headers as needed
+  },
 });
 
 // Define context and set defaults
@@ -38,13 +43,10 @@ const AuthProvider = (props: ContainerProps) => {
     if (!token) {
       // Validate the token with the backend
       setLoading(true);
-      axios
-        .post(
-          "https://b2b-saas-lead-mangement-main.onrender.com/api/users/validate",
-          {
-            withCredentials: true,
-          }
-        )
+      axiosInstance
+        .post("/users/validate", {
+          withCredentials: true,
+        })
         .then((response) => {
           setUser(response.data.user);
           setLoading(false);
@@ -61,13 +63,9 @@ const AuthProvider = (props: ContainerProps) => {
     password: string;
   }): Promise<boolean> => {
     try {
-      const response = await axios.post(
-        "https://b2b-saas-lead-mangement-main.onrender.com/api/users/login",
-        credentials,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axiosInstance.post("/users/login", credentials, {
+        withCredentials: true,
+      });
       const userData: User = response.data;
       setUser(userData);
       localStorage.setItem("user", JSON.stringify(userData)); // Store user data in localStorage
@@ -90,13 +88,10 @@ const AuthProvider = (props: ContainerProps) => {
   }): Promise<boolean> => {
     try {
       console.log("Registration credentials:", credentials2); // Log credentials
-      await axios.post(
-        "https://b2b-saas-lead-mangement-main.onrender.com/api/users/register",
-        {
-          email: credentials2.email,
-          password: credentials2.newPassword, // Ensure correct field name
-        }
-      );
+      await axiosInstance.post("/users/register", {
+        email: credentials2.email,
+        password: credentials2.newPassword, // Ensure correct field name
+      });
 
       // console.log('Registration response:', response.data); // Log response data
       return true;
@@ -110,6 +105,7 @@ const AuthProvider = (props: ContainerProps) => {
     setUser(null);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    console.log("done");
   };
 
   return (

@@ -15,9 +15,9 @@ function Layout() {
     if (!user && !loading) {
       navigate("/signin");
     }
-  }, [user]);
+  }, [user, loading]);
 
-  if (loading) {
+  if (loading || !user) {
     return (
       <div className="h-screen w-screen  flex justify-center items-center">
         <Loading />

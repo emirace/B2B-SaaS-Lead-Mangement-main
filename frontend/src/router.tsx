@@ -10,6 +10,8 @@ import Summary from "./pages/Dashboard/Summary";
 import Lead from "./pages/Dashboard/Lead";
 import Company from "./pages/Dashboard/Company";
 import Plans from "./pages/Dashboard/Plans";
+import Profile from "./pages/Dashboard/Profile";
+import PaymentConfirmation from "./pages/Dashboard/PaymentConfirmation";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +25,8 @@ const router = createBrowserRouter([
       { path: "add-user", element: <AddUser /> },
       { path: "summary", element: <Summary /> },
       { path: "plans", element: <Plans /> },
+      { path: "profile", element: <Profile /> },
+      { path: "/payment-confirmation", element: <PaymentConfirmation /> },
     ],
   },
   { path: "lead/:id", element: <Lead /> },

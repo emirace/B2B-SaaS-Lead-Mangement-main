@@ -15,8 +15,12 @@ export type AuthContextType = {
 export interface User {
   email: string;
   role: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   plan: string | null;
+  subscription: { type: string; time: String };
+  emailCredit: number;
+  phoneCredit: number;
 }
 
 type LoginFunction = (credentials: Credentials) => Promise<boolean>;

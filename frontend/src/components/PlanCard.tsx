@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaCheck } from "react-icons/fa";
+import Modal from "./Modal";
+import Checkout from "./Checkout";
 
 interface Props {
   planName: string;
@@ -14,7 +16,7 @@ interface Props {
   onSelectPlan: () => void;
 }
 
-function formatNumberWithCommas(number: number) {
+export function formatNumberWithCommas(number: number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
@@ -30,6 +32,8 @@ const PlanCard: React.FC<Props> = ({
   onAddMore,
   onSelectPlan,
 }) => {
+  console.log(onSelectPlan);
+  const [showModal, setShowModal] = useState(false);
   return (
     <div className="border-t-8 border-primary rounded-md bg-white p-3">
       <div className="flex justify-center items-center h-60 flex-col">
@@ -87,7 +91,7 @@ const PlanCard: React.FC<Props> = ({
           <>
             <button
               className="bg-primary text-white rounded-md p-2 w-full my-4 font-medium"
-              onClick={onSelectPlan}
+              onClick={() => setShowModal(true)}
             >
               Select Plan
             </button>
@@ -103,6 +107,15 @@ const PlanCard: React.FC<Props> = ({
           </div>
         ))}
       </div>
+      <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+        <Checkout
+          emailCredits={emailCredits}
+          mobileCredits={mobileCredits}
+          per={per}
+          type={planName}
+          actualPrice={actualPrice}
+        />
+      </Modal>
     </div>
   );
 };

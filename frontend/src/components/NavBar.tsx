@@ -1,5 +1,6 @@
 import { FaBars, FaProjectDiagram, FaUser } from "react-icons/fa";
 import { useAuth } from "../context/Auth";
+import { Link } from "react-router-dom";
 
 interface Props {
   onMenuToggle: () => void;
@@ -21,7 +22,7 @@ const NavBar: React.FC<Props> = ({ onMenuToggle }) => {
             Logo
           </p>
         </div>
-        <div className="flex items-center mx-4">
+        <Link to="/profile" className="flex items-center mx-4">
           <div className="rounded-full w-8 h-8 flex justify-center items-center border shadow-md">
             <FaUser />
           </div>
@@ -33,7 +34,7 @@ const NavBar: React.FC<Props> = ({ onMenuToggle }) => {
               Manager
             </p>
           </div>
-        </div>
+        </Link>
       </div>
     </div>
   );
