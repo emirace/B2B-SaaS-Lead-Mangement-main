@@ -23,15 +23,12 @@ const NavBar: React.FC<Props> = ({ onMenuToggle }) => {
           </p>
         </div>
         <Link to="/profile" className="flex items-center mx-4">
-          <div className="rounded-full w-8 h-8 flex justify-center items-center border shadow-md">
-            <FaUser />
+          <div className="rounded-full w-8 h-8 flex justify-center  items-center border shadow-md">
+            <FaUser color="white" />
           </div>
           <div className="px-2">
             <p className="capitalise tracking-wider font-regular text-sm text-gray-100">
-              {user?.name}
-            </p>
-            <p className="capitalize text-xs font-regular text-gray-300">
-              Manager
+              {user?.firstName}
             </p>
           </div>
         </Link>
