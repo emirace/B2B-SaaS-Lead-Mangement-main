@@ -122,8 +122,8 @@ const Profile: React.FC = () => {
                             : "text-green-500"
                         } font-semibold`}
                       >
-                        {transaction.type === "Withdrawal" ? "-" : "+"}
-                        {transaction.amount} TRX
+                        {transaction.type === "Withdrawal" ? "-" : "+"}$
+                        {transaction.amount}
                       </p>
                       <p className="text-sm text-gray-400">
                         {transaction.status}
