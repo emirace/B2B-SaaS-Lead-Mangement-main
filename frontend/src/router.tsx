@@ -27,9 +27,9 @@ const router = createBrowserRouter([
       { path: "plans", element: <Plans /> },
       { path: "profile", element: <Profile /> },
       { path: "/payment-confirmation", element: <PaymentConfirmation /> },
+      { path: "lead/:id", element: <Lead /> },
     ],
   },
-  { path: "lead/:id", element: <Lead /> },
   { path: "/signin", element: <SignIn /> },
   { path: "/company/:id", element: <Company /> },
 ]);

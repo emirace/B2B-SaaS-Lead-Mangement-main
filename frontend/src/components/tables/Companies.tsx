@@ -36,7 +36,7 @@ const Companies: React.FC = () => {
   const [sortField, setSortField] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize] = useState(20);
   const [showFilter, setShowFilter] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
   const [filters, setFilters] = useState<{
@@ -90,10 +90,10 @@ const Companies: React.FC = () => {
     setCurrentPage(page);
   };
 
-  const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setPageSize(Number(e.target.value));
-    setCurrentPage(1);
-  };
+  // const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   setPageSize(Number(e.target.value));
+  //   setCurrentPage(1);
+  // };
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters({ ...filters, [key]: value });
@@ -146,7 +146,7 @@ const Companies: React.FC = () => {
               <FaSearch className="absolute top-2 right-2 text-gray-500" />
             </div>
           </div>
-          <div>
+          {/* <div>
             <select
               value={pageSize}
               onChange={handlePageSizeChange}
@@ -156,7 +156,7 @@ const Companies: React.FC = () => {
               <option value={10}>10</option>
               <option value={20}>20</option>
             </select>
-          </div>
+          </div> */}
         </div>
         <div className="overflow-auto h-[calc(100vh-300px)] w-full">
           <table className="min-w-full bg-white">
@@ -228,7 +228,7 @@ const Companies: React.FC = () => {
                         <div className="flex gap-2 items-center mt-2">
                           {company.website.value && (
                             <Link
-                              to={company?.website?.value}
+                              to={`https://${company?.website?.value}`}
                               aria-label="LinkedIn"
                               className=""
                             >
@@ -237,7 +237,7 @@ const Companies: React.FC = () => {
                           )}
                           {company.linkedInUrl.value && (
                             <Link
-                              to={company?.linkedInUrl?.value}
+                              to={`https://${company?.linkedInUrl?.value}`}
                               aria-label="LinkedIn"
                               className="text-blue-700 hover:text-blue-900"
                             >
@@ -247,7 +247,7 @@ const Companies: React.FC = () => {
 
                           {company.facebook.value && (
                             <Link
-                              to={company?.facebook?.value}
+                              to={`https://${company?.facebook?.value}`}
                               aria-label="LinkedIn"
                               className="text-blue-700 hover:text-blue-900"
                             >
@@ -257,7 +257,7 @@ const Companies: React.FC = () => {
 
                           {company.twitter.value && (
                             <Link
-                              to={company?.twitter?.value}
+                              to={`https://${company?.twitter?.value}`}
                               aria-label="LinkedIn"
                               className="text-blue-700 hover:text-blue-900"
                             >

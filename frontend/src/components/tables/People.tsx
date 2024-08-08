@@ -7,12 +7,16 @@ import {
   FaLinkedinIn,
   FaPhone,
   FaEnvelope,
+  FaLink,
+  FaFacebookF,
+  FaTwitter,
 } from "react-icons/fa";
 import { axiosInstance } from "../../context/Auth";
 import Filter from "../../components/Filter";
 import { Link } from "react-router-dom";
 import Pagination from "../../components/Pagination";
 import Loading from "../../components/Loading";
+import { Company } from "./Companies";
 
 export interface Lead {
   _id: string;
@@ -23,6 +27,7 @@ export interface Lead {
   company: { value: string };
   jobTitle: { value: string };
   country: { value: string };
+  companyID: Company;
   // Add other fields as needed
 }
 
@@ -32,7 +37,7 @@ const People: React.FC = () => {
   const [sortField, setSortField] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize] = useState(10);
   const [showFilter, setShowFilter] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
   const [filters, setFilters] = useState<{
@@ -85,10 +90,10 @@ const People: React.FC = () => {
     setCurrentPage(page);
   };
 
-  const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setPageSize(Number(e.target.value));
-    setCurrentPage(1);
-  };
+  // const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   setPageSize(Number(e.target.value));
+  //   setCurrentPage(1);
+  // };
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters({ ...filters, [key]: value });
@@ -98,15 +103,19 @@ const People: React.FC = () => {
   const clearFilter = () => {};
 
   return (
-    <div className="flex  w-full">
-      <Filter
-        clearFilters={clearFilter}
-        filters={filters}
-        handleFilterChange={handleFilterChange}
-        setShowFilter={setShowFilter}
-        showFilter={showFilter}
-      />
-      <div className="bg-white rounded-md p-3 w-full">
+    <div className="flex gap-3 h-full w-full transition-all">
+      <div className={`${showFilter ? "w-1/5" : "w-0"}`}>
+        <Filter
+          clearFilters={clearFilter}
+          filters={filters}
+          handleFilterChange={handleFilterChange}
+          setShowFilter={setShowFilter}
+          showFilter={showFilter}
+        />
+      </div>
+      <div
+        className={`bg-white rounded-md p-3 ${showFilter ? "w-4/5" : "w-full"}`}
+      >
         <div className="flex justify-between items-center mb-4">
           <div className="flex gap-10 items-center">
             {showFilter ? (
@@ -141,27 +150,16 @@ const People: React.FC = () => {
               <FaSearch className="absolute top-2 right-2 text-gray-500" />
             </div>
           </div>
-          <div>
-            <select
-              value={pageSize}
-              onChange={handlePageSizeChange}
-              className="border p-2 rounded"
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-            </select>
-          </div>
         </div>
-        <div className="overflow-auto h-[calc(100vh-300px)] w-full">
+        <div className="overflow-auto h-[calc(100vh-300px)] ">
           <table className="min-w-full bg-white">
-            <thead className="border sticky -top-1 z-20 h-full bg-white">
+            <thead className="border sticky w-full -top-1 z-20 h-full bg-white">
               <tr>
                 <th
                   onClick={() => handleSort("firstName")}
                   className="cursor-pointer sticky left-0 bg-white  "
                 >
-                  <div className="flex items-center gap-2 border-r-2">
+                  <div className="flex items-center gap-2 ">
                     Name <FaSort />
                   </div>
                 </th>
@@ -199,7 +197,7 @@ const People: React.FC = () => {
                   </div>
                 </th>
                 <th className="cursor-pointer p-2">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 whitespace-nowrap ">
                     Contact Location
                   </div>
                 </th>
@@ -217,7 +215,7 @@ const People: React.FC = () => {
               ) : (
                 leads.map((lead, index) => (
                   <tr key={index} className="border p-2">
-                    <td className="font-medium capitalize p-2 border-r-2 flex items-start sticky left-0 bg-white">
+                    <td className="font-medium capitalize p-2  flex items-start sticky left-0 bg-white">
                       <input type="checkbox" className="mr-2 mt-2" />
                       <div>
                         <Link
@@ -227,7 +225,7 @@ const People: React.FC = () => {
                           {lead.firstName.value + " " + lead.lastName.value}
                         </Link>
                         <Link
-                          to={lead?.linkedInUrl?.value}
+                          to={`https://${lead?.linkedInUrl?.value}`}
                           aria-label="LinkedIn"
                           className="text-blue-700 hover:text-blue-900"
                         >
@@ -236,22 +234,68 @@ const People: React.FC = () => {
                       </div>
                     </td>
                     <td>
-                      <span className="px-2 capitalize">
+                      <span className="mx-2 px-2 capitalize">
                         {lead.jobTitle.value}
                       </span>
                     </td>
-                    <td>
-                      <Link to={`/company/${lead?.linkedInUrl?.value}`}>
-                        {lead?.company?.value}
-                      </Link>
+                    <td className="font-medium max-w-60 overflow-hidden  capitalize px-4 mx-4 flex items-start left-0 bg-white">
+                      <img src="" className="w-10 h-10 rounded-md mr-2" />
+                      <div>
+                        <Link
+                          className={`whitespace-nowrap  text-primary`}
+                          to={`/company/${lead?.companyID._id}`}
+                        >
+                          {lead?.companyID.name.value}
+                        </Link>
+                        <div className="flex gap-2 items-center mt-2">
+                          {lead?.companyID.website.value && (
+                            <Link
+                              to={`https://${lead?.companyID?.website?.value}`}
+                              aria-label="LinkedIn"
+                              className=""
+                            >
+                              <FaLink />
+                            </Link>
+                          )}
+                          {lead?.companyID.linkedInUrl.value && (
+                            <Link
+                              to={`https://${lead?.companyID?.linkedInUrl?.value}`}
+                              aria-label="LinkedIn"
+                              className="text-blue-700 hover:text-blue-900"
+                            >
+                              <FaLinkedinIn />
+                            </Link>
+                          )}
+
+                          {lead?.companyID.facebook.value && (
+                            <Link
+                              to={`https://${lead?.companyID?.facebook?.value}`}
+                              aria-label="LinkedIn"
+                              className="text-blue-700 hover:text-blue-900"
+                            >
+                              <FaFacebookF />
+                            </Link>
+                          )}
+
+                          {lead?.companyID.twitter.value && (
+                            <Link
+                              to={`https://${lead?.companyID?.twitter?.value}`}
+                              aria-label="LinkedIn"
+                              className="text-blue-700 hover:text-blue-900"
+                            >
+                              <FaTwitter />
+                            </Link>
+                          )}
+                        </div>
+                      </div>
                     </td>
                     <td>
-                      <button className="flex items-center gap-2 border p-2 rounded-md mx-2">
+                      <button className="flex items-center gap-2 border p-2 rounded-md mx-2 whitespace-nowrap">
                         <FaEnvelope /> Access email
                       </button>
                     </td>
                     <td>
-                      <button className="flex items-center gap-2 border p-2 rounded-md mx-2">
+                      <button className="flex items-center gap-2 border p-2 rounded-md mx-2 whitespace-nowrap">
                         <FaPhone /> Access Mobile
                       </button>
                     </td>
