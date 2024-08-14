@@ -22,7 +22,7 @@ exports.create = async (req, res) => {
       lastUpdated: req.body.lastUpdated || currentDate,
     },
     email: {
-      value: req.body.email,
+      value: req.body.email.split(",").map((email) => email.trim()),
       lastUpdated: req.body.lastUpdated || currentDate,
     },
     title: {
