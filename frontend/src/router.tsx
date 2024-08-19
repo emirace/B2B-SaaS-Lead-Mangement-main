@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import SignIn from "./pages/SignIn";
+import SignIn from "./pages/auth/SignIn";
 import Layout from "./pages/Dashboard/Layout";
 import Dashboard from "./pages/Dashboard";
 import Leads from "./pages/Dashboard/Leads";
@@ -12,6 +12,7 @@ import Company from "./pages/Dashboard/Company";
 import Plans from "./pages/Dashboard/Plans";
 import Profile from "./pages/Dashboard/Profile";
 import PaymentConfirmation from "./pages/Dashboard/PaymentConfirmation";
+import SignUp from "./pages/auth/Signup";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
     ],
   },
   { path: "/signin", element: <SignIn /> },
+  { path: "/signup", element: <SignUp /> },
   { path: "/company/:id", element: <Company /> },
 ]);
 
