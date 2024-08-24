@@ -73,18 +73,18 @@ const Upload = () => {
       }
 
       // Validate file size (e.g., max 5MB)
-      const maxSize = 5 * 1024 * 1024; // 5MB
-      if (file.size > maxSize) {
-        setError("File is too large. Please upload a file smaller than 5MB.");
-        return;
-      }
+      // const maxSize = 5 * 1024 * 1024; // 5MB
+      // if (file.size > maxSize) {
+      //   setError("File is too large. Please upload a file smaller than 5MB.");
+      //   return;
+      // }
 
       Papa.parse(file, {
         header: true,
         skipEmptyLines: true,
         complete: (results: any) => {
           // Validate content by checking required fields in the headers
-          const requiredHeaders = ["First Name", "Last Name", "Email"];
+          const requiredHeaders: any[] = [];
           const headers = results.meta.fields || [];
           const missingHeaders = requiredHeaders.filter(
             (header) => !headers.includes(header)
