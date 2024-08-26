@@ -153,6 +153,7 @@ const Upload = () => {
           className="mb-4"
         />
 
+        {error && <div className="text-red-500">{error}</div>}
         <div className="mb-4">
           <h2 className="text-xl font-semibold">Lead Info:</h2>
           {leadFields.map((field, index) => (
