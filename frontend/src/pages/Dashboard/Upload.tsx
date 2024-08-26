@@ -118,9 +118,9 @@ const Upload = () => {
       return;
     }
 
-    const requiredFields = ["First Name", "Last Name"];
+    const requiredFields: any = [];
     const missingFields = requiredFields.filter(
-      (field) => !fieldMappings[field]
+      (field: string | number) => !fieldMappings[field]
     );
 
     if (missingFields.length > 0) {
