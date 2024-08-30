@@ -128,15 +128,15 @@ const Upload = () => {
       return;
     }
 
-    const invalidRows = csvData.filter(
-      (row) =>
-        !row[fieldMappings["First Name"]] || !row[fieldMappings["Last Name"]]
-    );
+    // const invalidRows = csvData.filter(
+    //   (row) =>
+    //     !row[fieldMappings["First Name"]] || !row[fieldMappings["Last Name"]]
+    // );
 
-    if (invalidRows.length > 0) {
-      setError("CSV contains rows with missing first name or last name");
-      return;
-    }
+    // if (invalidRows.length > 0) {
+    //   setError("CSV contains rows with missing first name or last name");
+    //   return;
+    // }
 
     startUpload(csvData, fieldMappings);
   };
