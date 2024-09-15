@@ -21,7 +21,8 @@ const normalizeLinkedInUrl = (url) => {
     return ""; // Return an empty string if the URL is not valid
   }
   const normalizedUrl = url
-    .replace(/^https?:\/\/(www\.)?linkedin\.com\/(in|company)\/?/, "") // Remove LinkedIn base URL
+    .replace(/\s/g, "") // Remove all whitespace characters (including newlines)
+    .replace(/^(https?:\/\/)?(www\.)?linkedin\.com\/(in|company)\/?/, "") // Remove base URL
     .replace(/\/$/, ""); // Remove trailing slash if present
   return normalizedUrl;
 };
