@@ -39,9 +39,15 @@ const processCSVData = async (csvData, fieldMappings) => {
     const companyLinkedInUrl = sanitizeValue(
       row[fieldMappings["Company Linkedin Url"]]
     );
+    console.log("companyLinkedInUrl", companyLinkedInUrl);
     const normalizedCompanyLinkedInUrl =
       normalizeLinkedInUrl(companyLinkedInUrl);
+    console.log("normalizedCompanyLinkedInUrl", normalizedCompanyLinkedInUrl);
     if (normalizedCompanyLinkedInUrl) {
+      console.log(
+        "normalizedCompanyLinkedInUrl222",
+        normalizedCompanyLinkedInUrl
+      );
       const companyData = {
         name: {
           value: sanitizeValue(row[fieldMappings["Company Name"]]),
@@ -229,6 +235,11 @@ const processCSVData = async (csvData, fieldMappings) => {
         companyID: companyMap.get(normalizedCompanyLinkedInUrl) || "",
         isComplete: !!row[fieldMappings["LinkedIn UrL"]],
       };
+
+      // Remove companyID if normalizedCompanyLinkedInUrl is empty
+      if (!normalizedCompanyLinkedInUrl) {
+        delete leadData.companyID;
+      }
 
       // Lead Data Processing
       if (!leadData.linkedInUrl.value) {

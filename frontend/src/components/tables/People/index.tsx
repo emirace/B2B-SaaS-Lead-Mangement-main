@@ -318,12 +318,12 @@ const People: React.FC = () => {
                       <div>
                         <Link
                           className={`whitespace-nowrap  text-primary`}
-                          to={`/company/${lead?.companyID._id}`}
+                          to={`/company/${lead?.companyID?._id}`}
                         >
-                          {lead?.companyID.name.value}
+                          {lead?.companyID?.name?.value}
                         </Link>
                         <div className="flex gap-2 items-center mt-2">
-                          {lead?.companyID.website.value && (
+                          {lead?.companyID?.website?.value && (
                             <Link
                               to={`https://${lead?.companyID?.website?.value}`}
                               aria-label="LinkedIn"
@@ -332,7 +332,7 @@ const People: React.FC = () => {
                               <FaLink />
                             </Link>
                           )}
-                          {lead?.companyID.linkedInUrl.value && (
+                          {lead?.companyID?.linkedInUrl?.value && (
                             <Link
                               to={linkedInLink(
                                 lead?.companyID?.linkedInUrl?.value,
@@ -345,7 +345,7 @@ const People: React.FC = () => {
                             </Link>
                           )}
 
-                          {lead?.companyID.facebook.value && (
+                          {lead?.companyID?.facebook?.value && (
                             <Link
                               to={`https://${lead?.companyID?.facebook?.value}`}
                               aria-label="LinkedIn"
@@ -355,7 +355,7 @@ const People: React.FC = () => {
                             </Link>
                           )}
 
-                          {lead?.companyID.twitter.value && (
+                          {lead?.companyID?.twitter?.value && (
                             <Link
                               to={`https://${lead?.companyID?.twitter?.value}`}
                               aria-label="LinkedIn"
