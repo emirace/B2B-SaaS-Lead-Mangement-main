@@ -17,7 +17,7 @@ import { Company } from "../Companies";
 import AccessEmails from "./AccessEmails";
 import { axiosInstance } from "../../../context/Auth";
 import AccessPhones from "./AccessPhones";
-import { linkedInLink } from "../../../utils/utils";
+import { getFaviconUrl, linkedInLink } from "../../../utils/utils";
 
 export interface Lead {
   _id: string;
@@ -78,6 +78,7 @@ const People: React.FC = () => {
     };
   }>({});
   const [selectedLeads, setSelectedLeads] = useState<string[]>([]);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     fetchLeads();
@@ -163,6 +164,61 @@ const People: React.FC = () => {
     );
   };
 
+  // Function to convert JSON data to CSV
+  const jsonToCsv = (data: any[]) => {
+    const csvRows: string[] = [];
+
+    const headers = Object.keys(data[0]);
+    csvRows.push(headers.join(","));
+
+    // Loop over the data and create rows
+    data.forEach((row) => {
+      const values = headers.map((header) => {
+        const escaped = ("" + row[header]).replace(/"/g, '\\"');
+        return `"${escaped}"`;
+      });
+      csvRows.push(values.join(","));
+    });
+
+    return csvRows.join("\n");
+  };
+
+  // Function to trigger CSV download
+  const downloadCsv = (csv: string, filename: string) => {
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link); // Clean up the DOM
+  };
+
+  // Function to export leads and download as CSV
+  const exportLeadsAsCsv = async () => {
+    try {
+      setExporting(true);
+      const response = await axiosInstance.post("/leads/export", {
+        leadIds: selectedLeads,
+      });
+      console.log(response);
+      if (response.data && response.data.leads) {
+        const leads = response.data.leads;
+
+        // Convert lead data to CSV format
+        const csv = jsonToCsv(leads);
+
+        // Trigger CSV download
+        downloadCsv(csv, "exported-leads.csv");
+      }
+    } catch (error) {
+      console.error("Error exporting leads:", error);
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
     <div className="flex gap-3 h-full w-full transition-all">
       <div className={`${showFilter ? "w-1/5" : "w-0"}`}>
@@ -180,38 +236,47 @@ const People: React.FC = () => {
         className={`bg-white rounded-md p-3 ${showFilter ? "w-4/5" : "w-full"}`}
       >
         <div className="flex justify-between items-center mb-4">
-          <div className="flex gap-10 items-center">
-            {showFilter ? (
-              <div
-                onClick={() => setShowFilter(!showFilter)}
-                className="flex items-center gap-2 border p-2 rounded-md cursor-pointer"
-              >
-                <FaFilter
+          <div className="flex justify-between w-full items-center">
+            <div className="flex gap-10 items-center">
+              {showFilter ? (
+                <div
                   onClick={() => setShowFilter(!showFilter)}
-                  size={12}
-                  className="cursor-pointer"
+                  className="flex items-center gap-2 border p-2 rounded-md cursor-pointer"
+                >
+                  <FaFilter
+                    onClick={() => setShowFilter(!showFilter)}
+                    size={12}
+                    className="cursor-pointer"
+                  />
+                  <span>Hide Filter</span>
+                </div>
+              ) : (
+                <div
+                  onClick={() => setShowFilter(!showFilter)}
+                  className="flex items-center gap-2 border p-2 rounded-md cursor-pointer"
+                >
+                  <FaFilter size={12} className="cursor-pointer" />
+                  <span>Show Filter</span>
+                </div>
+              )}
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="border p-2 rounded"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
                 />
-                <span>Hide Filter</span>
+                <FaSearch className="absolute top-2 right-2 text-gray-500" />
               </div>
-            ) : (
-              <div
-                onClick={() => setShowFilter(!showFilter)}
-                className="flex items-center gap-2 border p-2 rounded-md cursor-pointer"
-              >
-                <FaFilter size={12} className="cursor-pointer" />
-                <span>Show Filter</span>
-              </div>
-            )}
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="border p-2 rounded"
-                value={searchTerm}
-                onChange={handleSearchChange}
-              />
-              <FaSearch className="absolute top-2 right-2 text-gray-500" />
             </div>
+            <button
+              onClick={exportLeadsAsCsv}
+              className="bg-primary text-white px-4 py-2 rounded-md font-medium disabled:bg-gray-300 disabled:text-black"
+              disabled={selectedLeads.length <= 0 || exporting}
+            >
+              {exporting ? "Exporting" : "Export"}
+            </button>
           </div>
         </div>
         <div className="overflow-auto h-[calc(100vh-300px)] ">
@@ -299,13 +364,15 @@ const People: React.FC = () => {
                         >
                           {lead.firstName.value + " " + lead.lastName.value}
                         </Link>
-                        <Link
-                          to={linkedInLink(lead?.linkedInUrl?.value)}
-                          aria-label="LinkedIn"
-                          className="text-blue-700 hover:text-blue-900"
-                        >
-                          <FaLinkedinIn />
-                        </Link>
+                        {lead?.linkedInUrl?.value && (
+                          <Link
+                            to={linkedInLink(lead?.linkedInUrl?.value)}
+                            aria-label="LinkedIn"
+                            className="text-blue-700 hover:text-blue-900"
+                          >
+                            <FaLinkedinIn />
+                          </Link>
+                        )}
                       </div>
                     </td>
                     <td>
@@ -314,7 +381,12 @@ const People: React.FC = () => {
                       </span>
                     </td>
                     <td className="font-medium max-w-60 overflow-hidden  capitalize px-4 mx-4 flex items-start left-0 bg-white">
-                      <img src="" className="w-10 h-10 rounded-md mr-2" />
+                      <img
+                        src={getFaviconUrl(
+                          `https://${lead?.companyID?.website?.value}`
+                        )}
+                        className="w-10 h-10 rounded-md mr-2"
+                      />
                       <div>
                         <Link
                           className={`whitespace-nowrap  text-primary`}

@@ -1,6 +1,7 @@
 const Company = require("../models/company.model");
 const Lead = require("../models/lead.model");
 const moment = require("moment");
+const User = require("../models/user.model");
 
 const escapeRegExp = (string) => {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // Escape special characters for use in a regex
@@ -141,7 +142,7 @@ exports.findAll = async (req, res) => {
         { "twitter.value": searchRegex },
       ],
     };
-
+    searchConditions["linkedInUrl.value"] = { $exists: true, $ne: null };
     // Apply filter conditions for each field with include, exclude, isKnown, and isNotKnown values
     for (const [key, filterValues] of Object.entries(parsedFilter)) {
       const { include = "", exclude = "", isKnown, isNotKnown } = filterValues;
@@ -451,6 +452,64 @@ exports.searchLeads = async (req, res) => {
   } catch (error) {
     console.error("Error searching leads:", error);
     res.status(500).json({ error: "An error occurred while searching leads." });
+  }
+};
+
+exports.bulkExportLeads = async (req, res) => {
+  try {
+    const { leadIds } = req.body;
+    const userId = req.user.id;
+
+    // Find the user and check access
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    // Fetch the selected leads
+    const leads = await Lead.find({ _id: { $in: leadIds } }).populate(
+      "companyID"
+    );
+
+    // Process each lead according to user permissions
+    const exportedLeads = leads.map((lead) => {
+      const leadData = {
+        firstName: lead.firstName.value,
+        lastName: lead.lastName.value,
+        linkedInUrl: lead.linkedInUrl.value,
+        jobTitle: lead.jobTitle.value,
+        company: lead.companyID ? lead.companyID.name.value : null,
+        city: lead.city.value,
+        state: lead.state.value,
+        country: lead.country.value,
+      };
+
+      // Check if user has email access
+      if (user.emailAccessed.includes(lead._id)) {
+        leadData.email = lead.email.value;
+        // user.emailAccessed.push(lead._id);
+        // user.emailCredit--;
+      }
+
+      // Check if user has phone access
+      if (user.phoneAccessed.includes(lead._id)) {
+        leadData.phone = lead.phone.value;
+        // user.phoneAccessed.push(lead._id);
+        // user.phoneCredit--;
+      }
+
+      return leadData;
+    });
+
+    // Save the user’s updated access history and credits
+    await user.save();
+
+    // Send the exported leads data
+    res.send({ leads: exportedLeads });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Error exporting leads" });
   }
 };
 

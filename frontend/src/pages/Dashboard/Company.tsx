@@ -5,7 +5,7 @@ import Pagination from "../../components/Pagination";
 import { Lead } from "./Leads";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../../context/Auth";
-import { linkedInLink } from "../../utils/utils";
+import { getFaviconUrl, linkedInLink } from "../../utils/utils";
 
 interface Field {
   value: string;
@@ -91,7 +91,11 @@ function Company() {
     <div className="bg-white">
       <div className="flex items-center justify-between w-full container p-4 mx-auto">
         <div className="flex gap-5 items-center">
-          <img className="h-12 w-12 rounded-md bg-black" alt="Company logo" />
+          <img
+            src={getFaviconUrl(`https://${company?.website?.value}`)}
+            className="h-12 w-12 rounded-md bg-black"
+            alt="Company logo"
+          />
           <div className="flex flex-col gap-2">
             <div className="text-xl capitalize font-semibold mb-3">
               {company?.name?.value}
@@ -217,6 +221,10 @@ function Company() {
                       {company?.website.value}
                     </Link>
                   </td>
+                </tr>
+                <tr>
+                  <td className="text-gray-600">Employees</td>
+                  <td>{company?.employees.value}</td>
                 </tr>
               </tbody>
             </table>

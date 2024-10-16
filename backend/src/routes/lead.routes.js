@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const leadController = require("../controllers/lead.controller");
+const auth = require("../middleware/auth");
 
 // Create a new lead
 router.post("/", leadController.create);
+router.post("/export", auth, leadController.bulkExportLeads);
 
 // Retrieve all companies
 router.get("/", leadController.findAll);
