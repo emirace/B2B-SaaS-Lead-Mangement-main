@@ -18,6 +18,7 @@ import AccessEmails from "./AccessEmails";
 import { axiosInstance } from "../../../context/Auth";
 import AccessPhones from "./AccessPhones";
 import { getFaviconUrl, linkedInLink } from "../../../utils/utils";
+import Modal from "../../Modal";
 
 export interface Lead {
   _id: string;
@@ -69,6 +70,7 @@ const People: React.FC = () => {
   const [pageSize] = useState(25);
   const [showFilter, setShowFilter] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
+  const [showModal, setShowModal] = useState(false);
   const [filters, setFilters] = useState<{
     [key: string]: {
       exclude: string | null;
@@ -216,6 +218,7 @@ const People: React.FC = () => {
       console.error("Error exporting leads:", error);
     } finally {
       setExporting(false);
+      setShowModal(false);
     }
   };
 
@@ -271,7 +274,8 @@ const People: React.FC = () => {
               </div>
             </div>
             <button
-              onClick={exportLeadsAsCsv}
+              onClick={() => setShowModal(true)}
+              // onClick={exportLeadsAsCsv}
               className="bg-primary text-white px-4 py-2 rounded-md font-medium disabled:bg-gray-300 disabled:text-black"
               disabled={selectedLeads.length <= 0 || exporting}
             >
@@ -460,6 +464,39 @@ const People: React.FC = () => {
           totalPages={totalPages}
         />
       </div>
+
+      <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+        <div className=" w-full">
+          <div className="font-bold text-lg mb-4">Export as CSV</div>
+          <div className="mb-4">
+            Please note: Exporting new contacts to a CSV{" "}
+            <span className="font-bold">
+              costs 1 export credit per verified email.
+            </span>
+            Saved contacts with emails already available will not incur a credit
+            cost.
+          </div>
+          <div className="mb-4">Your CSV export will be downloaded.</div>
+          <div className="text-primary font-medium">
+            Your made {selectedLeads.length} selections
+          </div>
+          <div className=" flex gap-5 items-center mt-6 justify-end">
+            <button
+              onClick={() => setShowModal(false)}
+              className="bg-gray-300 text-black px-4 py-2 rounded-md font-medium"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={exportLeadsAsCsv}
+              className="bg-primary text-white px-4 py-2 rounded-md font-medium disabled:bg-gray-300 disabled:text-black"
+              disabled={selectedLeads.length <= 0 || exporting}
+            >
+              {exporting ? "Exporting" : "Export"}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
