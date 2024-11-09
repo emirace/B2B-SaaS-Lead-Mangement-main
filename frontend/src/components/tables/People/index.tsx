@@ -17,8 +17,9 @@ import { Company } from "../Companies";
 import AccessEmails from "./AccessEmails";
 import { axiosInstance } from "../../../context/Auth";
 import AccessPhones from "./AccessPhones";
-import { getFaviconUrl, linkedInLink } from "../../../utils/utils";
+import { linkedInLink } from "../../../utils/utils";
 import Modal from "../../Modal";
+import FaviconImage from "../../FaviconImage";
 
 export interface Lead {
   _id: string;
@@ -385,11 +386,8 @@ const People: React.FC = () => {
                       </span>
                     </td>
                     <td className="font-medium max-w-60 overflow-hidden  capitalize px-4 mx-4 flex items-start left-0 bg-white">
-                      <img
-                        src={getFaviconUrl(
-                          `https://${lead?.companyID?.website?.value}`
-                        )}
-                        className="w-10 h-10 rounded-md mr-2"
+                      <FaviconImage
+                        url={`https://${lead?.companyID?.website?.value}`}
                       />
                       <div>
                         <Link
