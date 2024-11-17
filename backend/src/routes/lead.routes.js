@@ -6,6 +6,7 @@ const auth = require("../middleware/auth");
 // Create a new lead
 router.post("/", leadController.create);
 router.post("/export", auth, leadController.bulkExportLeads);
+router.post("/export-bulk", auth, leadController.fetchRandomLeads);
 
 // Retrieve all companies
 router.get("/", leadController.findAll);

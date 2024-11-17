@@ -72,6 +72,8 @@ const People: React.FC = () => {
   const [showFilter, setShowFilter] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [showBulkModal, setShowBulkModal] = useState(false);
+  const [randomNumber, setRandomNumber] = useState(0);
   const [filters, setFilters] = useState<{
     [key: string]: {
       exclude: string | null;
@@ -214,12 +216,39 @@ const People: React.FC = () => {
 
         // Trigger CSV download
         downloadCsv(csv, "exported-leads.csv");
+        setShowModal(false);
       }
     } catch (error) {
       console.error("Error exporting leads:", error);
     } finally {
       setExporting(false);
-      setShowModal(false);
+    }
+  };
+
+  const exportBulkLeadsAsCsv = async () => {
+    try {
+      if (randomNumber <= 0) {
+        return;
+      }
+      setExporting(true);
+      const response = await axiosInstance.post("/leads/export-bulk", {
+        count: randomNumber,
+      });
+      console.log(response);
+      if (response.data && response.data.leads) {
+        const leads = response.data.leads;
+
+        // Convert lead data to CSV format
+        const csv = jsonToCsv(leads);
+
+        // Trigger CSV download
+        downloadCsv(csv, "exported-leads.csv");
+        setShowBulkModal(false);
+      }
+    } catch (error) {
+      console.error("Error exporting leads:", error);
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -274,14 +303,21 @@ const People: React.FC = () => {
                 <FaSearch className="absolute top-2 right-2 text-gray-500" />
               </div>
             </div>
-            <button
-              onClick={() => setShowModal(true)}
-              // onClick={exportLeadsAsCsv}
-              className="bg-primary text-white px-4 py-2 rounded-md font-medium disabled:bg-gray-300 disabled:text-black"
-              disabled={selectedLeads.length <= 0 || exporting}
-            >
-              {exporting ? "Exporting" : "Export"}
-            </button>
+            <div className="flex gap-4">
+              <button
+                onClick={() => setShowBulkModal(true)}
+                className="border-primary border text-primary px-4 py-2 rounded-md font-medium disabled:bg-gray-300 disabled:text-black"
+              >
+                Bulk
+              </button>
+              <button
+                onClick={() => setShowModal(true)}
+                className="bg-primary text-white px-4 py-2 rounded-md font-medium disabled:bg-gray-300 disabled:text-black"
+                disabled={selectedLeads.length <= 0 || exporting}
+              >
+                {exporting ? "Exporting" : "Export"}
+              </button>
+            </div>
           </div>
         </div>
         <div className="overflow-auto h-[calc(100vh-300px)] ">
@@ -489,6 +525,42 @@ const People: React.FC = () => {
               onClick={exportLeadsAsCsv}
               className="bg-primary text-white px-4 py-2 rounded-md font-medium disabled:bg-gray-300 disabled:text-black"
               disabled={selectedLeads.length <= 0 || exporting}
+            >
+              {exporting ? "Exporting" : "Export"}
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal isOpen={showBulkModal} onClose={() => setShowBulkModal(false)}>
+        <div className=" w-full">
+          <div className="font-bold text-lg mb-4">Bulk Export</div>
+          <div className="mb-4">
+            Please note: Exporting new contacts to a CSV{" "}
+            <span className="font-bold">
+              costs 1 export credit per verified email.
+            </span>{" "}
+            Saved contacts with emails already available will not incur a credit
+            cost.
+          </div>
+          <div className="mb-4">Your CSV export will be downloaded.</div>
+          <div className="">Enter number of leads</div>
+          <input
+            className="border rounded-md border-primary"
+            type="number"
+            onChange={(e) => setRandomNumber(parseInt(e.target.value))}
+          />
+          <div className=" flex gap-5 items-center mt-6 justify-end">
+            <button
+              onClick={() => setShowBulkModal(false)}
+              className="bg-gray-300 text-black px-4 py-2 rounded-md font-medium"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={exportBulkLeadsAsCsv}
+              className="bg-primary text-white px-4 py-2 rounded-md font-medium disabled:bg-gray-300 disabled:text-black"
+              disabled={randomNumber <= 0}
             >
               {exporting ? "Exporting" : "Export"}
             </button>
